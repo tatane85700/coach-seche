@@ -121,6 +121,9 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 .tmr{text-align:center;padding-top:18px}.tmName{font-size:24px;font-weight:700;margin:16px 0 6px;line-height:1.15}.tmBig{font:700 64px/1.1 'DM Mono',monospace;margin:10px 0 16px;font-variant-numeric:tabular-nums}
 .brWrap{position:relative;height:240px;display:flex;align-items:center;justify-content:center;margin:10px 0}.brC{width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#7cc49b 0%,#1d9e75 60%,#14483a 100%);transform:scale(.45);transition:transform 5s ease-in-out;opacity:.9}.brT{position:absolute;font-size:22px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.35)}
 .spark{display:flex;align-items:flex-end;gap:2px;height:34px;width:90px;flex:none}.spark i{flex:1;border-radius:2px;min-width:5px}
+.runGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.rv{font:700 28px/1.1 'DM Mono',monospace}
+.route{width:100%;height:auto;max-height:200px;background:var(--card);border:1px solid var(--line);border-radius:14px;margin:6px 0}
+.runLock{position:fixed;inset:0;z-index:40;background:rgba(10,20,16,.94);display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;touch-action:none;user-select:none;-webkit-user-select:none}
 @media(prefers-reduced-motion:reduce){.brC{transition:transform 1s linear}}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}.ring{transition:none!important}}
 @media(max-width:600px){.dial{grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:12px}h1{font-size:26px}}
@@ -291,11 +294,13 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 <div id="picker" class="sheet" hidden></div>
 <div id="timer" class="sheet" hidden></div>
 <div id="breath" class="sheet" hidden></div>
+<div id="runSheet" class="sheet" hidden></div>
 
 <!-- SPORT -->
 <section class="view" id="v-sport">
   <div class="top"><h1>Sport</h1></div>
   <div class="hero" data-art="sport"></div>
+  <div class="card" id="runBox"></div>
   <div class="card" id="spNext"></div>
   <div class="card"><div class="cardHead"><span class="eyebrow">Échauffement et retour au calme</span></div>
     <p class="small" style="margin:0 0 4px"><b>Avant la boxe ou la muscu</b> : 10 mouvements guidés, 6 minutes, avec une attention aux poignets, coudes et épaules.</p>
@@ -699,7 +704,7 @@ $('#exp').onclick=async()=>{const txt=JSON.stringify({app:'coachseche',v:1,date:
 try{const f=new File([txt],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Sauvegarde Coach'});return}}catch(e){if(e&&e.name==='AbortError')return}
 const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)};
 function importText(t){let o;try{o=JSON.parse(t)}catch(e){toast('Données illisibles');return}const data=o&&o.data;if(!data||typeof data!=='object'){toast('Ce n\'est pas une sauvegarde Coach');return}
-let n=0;for(const k of Object.keys(data)){if(/^(profile|weights|courses|plan|myrec|frigo|sport|tests|mens|pain|d-\d{4}-\d{2}-\d{2})$/.test(k)){lsSet(k,data[k]);n++}}
+let n=0;for(const k of Object.keys(data)){if(/^(profile|weights|courses|plan|myrec|frigo|sport|tests|mens|pain|runs|d-\d{4}-\d{2}-\d{2})$/.test(k)){lsSet(k,data[k]);n++}}
 toast(n+' éléments importés');setTimeout(()=>location.reload(),900)}
 $('#impB').onclick=()=>importText($('#impT').value.trim());
 $('#impF').addEventListener('change',async e=>{const f=e.target.files[0];if(f)importText(await f.text());e.target.value=''});
@@ -1035,9 +1040,72 @@ $('#rvCopy').onclick=async()=>{const t=`Bilan de la semaine (${frDate(ds[0].key)
 document.getElementById('rvBtn').addEventListener('click',weekReview);
 
 document.addEventListener('click',e=>{const b=e.target.closest('[data-brs]');if(b)startBreath(+b.dataset.brs)});
+/* ---------- GPS : course, marche, vélo ---------- */
+const GM={course:{lab:'Course',max:9},marche:{lab:'Marche',max:4},velo:{lab:'Vélo',max:22}};
+let RUN=null;
+const hav=(a,b)=>{const R=6371000,t=x=>x*Math.PI/180,dl=t(b.la-a.la),dn=t(b.lo-a.lo);const s=Math.sin(dl/2)**2+Math.cos(t(a.la))*Math.cos(t(b.la))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(s))};
+const mmss=s=>{s=Math.max(0,Math.round(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return(h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0')};
+const paceTxt=(sec,km)=>km>0.05?mmss(sec/km)+' /km':'—';
+function runKcal(mode,km,sec){const kg=P.w||76;if(mode==='course')return Math.round(0.9*kg*km);if(mode==='marche')return Math.round(0.5*kg*km);const v=sec?km/(sec/3600):0;const met=v<16?4:v<19?6:v<22?8:10;return Math.round((met-1)*3.5*kg/200*sec/60)}
+function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function runElapsed(){if(!RUN)return 0;return RUN.acc+(RUN.paused?0:(Date.now()-RUN.t0)/1000)}
+function startRun(mode){if(!('geolocation' in navigator)){toast('GPS indisponible sur cet appareil');return}
+RUN={mode,pts:[],dist:0,acc:0,t0:Date.now(),paused:false,splits:[],lastKm:0,lastSplitT:0,gpsOk:false,lock:false,hiddenAt:null};
+say('Recherche du signal GPS.');wake(true);$('#runSheet').hidden=false;
+RUN.watch=navigator.geolocation.watchPosition(onPos,err=>{RUN&&(RUN.err=err.code===1?'Autorise la localisation pour Safari : Réglages > Confidentialité > Service de localisation.':'Signal GPS faible, reste à découvert.');drawRun()},{enableHighAccuracy:true,maximumAge:0,timeout:20000});
+RUN.iv=setInterval(drawRun,1000);drawRun()}
+function onPos(p){if(!RUN||RUN.paused)return;const c=p.coords;RUN.err=null;RUN.acc_m=Math.round(c.accuracy);if(c.accuracy>35){drawRun();return}
+const pt={la:c.latitude,lo:c.longitude,t:p.timestamp};if(!RUN.gpsOk){RUN.gpsOk=true;say('Signal GPS trouvé. C\'est parti !');beep(880)}
+const last=RUN.resetNext?null:RUN.pts[RUN.pts.length-1];RUN.resetNext=false;if(last){const d=hav(last,pt),dt=Math.max(1,(pt.t-last.t)/1000);if(d<3)return;if(d/dt>GM[RUN.mode].max*1.3)return;RUN.dist+=d}
+RUN.pts.push(pt);const km=Math.floor(RUN.dist/1000);if(km>RUN.lastKm){const el=runElapsed();const sp=el-RUN.lastSplitT;RUN.splits.push(sp);RUN.lastSplitT=el;RUN.lastKm=km;
+say(`${km} kilomètre${km>1?'s':''}. Temps ${spoken(el)}. ${RUN.mode==='velo'?'Vitesse moyenne '+Math.round(RUN.dist/1000/(el/3600))+' kilomètres heure':'Dernier kilomètre en '+spoken(sp)}.`);beep(990,.25)}}
+const spoken=s=>{s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return(h?h+' heure'+(h>1?'s ':' '):'')+(m?m+' minute'+(m>1?'s ':' '):'')+(x?x+' seconde'+(x>1?'s':''):'')};
+function routeSvg(pts,w=300,h=150){if(pts.length<2)return`<svg viewBox="0 0 ${w} ${h}" class="route"><text x="${w/2}" y="${h/2}" text-anchor="middle" fill="var(--mut)" font-size="13">Le tracé apparaît en avançant</text></svg>`;
+const la=pts.map(p=>p.la),lo=pts.map(p=>p.lo);const k=Math.cos(la[0]*Math.PI/180);const x0=Math.min(...lo),x1=Math.max(...lo),y0=Math.min(...la),y1=Math.max(...la);const sx=(x1-x0)*k||1e-6,sy=(y1-y0)||1e-6;const s=Math.min((w-20)/sx,(h-20)/sy);
+const X=p=>10+((p.lo-x0)*k)*s+((w-20)-sx*s)/2,Y=p=>h-10-(p.la-y0)*s-((h-20)-sy*s)/2;const d=pts.map((p,i)=>(i?'L':'M')+X(p).toFixed(1)+' '+Y(p).toFixed(1)).join('');const a=pts[0],b=pts[pts.length-1];
+return`<svg viewBox="0 0 ${w} ${h}" class="route"><path d="${d}" fill="none" stroke="var(--acc)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${X(a)}" cy="${Y(a)}" r="5" fill="var(--brand)"/><circle cx="${X(b)}" cy="${Y(b)}" r="6" fill="var(--acc)" stroke="#fff" stroke-width="2"/></svg>`}
+function drawRun(){if(!RUN)return;const el=runElapsed(),km=RUN.dist/1000;const speed=el>0?km/(el/3600):0;const cur=RUN.splits.length?RUN.splits[RUN.splits.length-1]:null;
+$('#runSheet').innerHTML=`<div class="sheetIn tmr" style="max-height:100vh;border-radius:0;min-height:100vh"><div class="cardHead"><span class="eyebrow">${GM[RUN.mode].lab} · ${RUN.gpsOk?'GPS ok'+(RUN.acc_m?' (±'+RUN.acc_m+' m)':''):'recherche du GPS…'}</span><span class="small mut">${RUN.paused?'En pause':''}</span></div>
+${RUN.err?`<p class="small" style="color:var(--warn)">${esc(RUN.err)}</p>`:''}
+<div class="tmBig" style="margin:8px 0 0">${mmss(el)}</div>
+<div class="runGrid"><div><div class="rv">${km.toFixed(2).replace('.',',')}</div><div class="small mut">km</div></div><div><div class="rv">${RUN.mode==='velo'?(speed?speed.toFixed(1).replace('.',','):'—'):paceTxt(el,km).replace(' /km','')}</div><div class="small mut">${RUN.mode==='velo'?'km/h moyen':'allure /km'}</div></div><div><div class="rv">${runKcal(RUN.mode,km,el)}</div><div class="small mut">kcal actives</div></div></div>
+${routeSvg(RUN.pts)}
+${RUN.splits.length?`<p class="small mut" style="margin:6px 0">Dernier km : ${mmss(cur)}</p>`:''}
+<div class="btns" style="justify-content:center"><button data-run="pause">${RUN.paused?'Reprendre':'Pause'}</button><button data-run="lock">Verrouiller l'écran</button><button class="pri" data-run="end">Terminer</button></div>
+<p class="small mut" style="margin-top:10px">Garde l'appli ouverte : l'iPhone coupe le GPS des applis web quand l'écran s'éteint ou que tu changes d'appli.</p></div>
+${RUN.lock?`<div class="runLock" id="runLock"><div><div class="tmBig" style="color:#fff">${mmss(el)}</div><div style="color:#fff;font-size:26px;font-weight:700">${km.toFixed(2).replace('.',',')} km</div><p style="color:#ddd">Écran verrouillé.<br>Reste appuyé 2 secondes pour déverrouiller.</p></div></div>`:''}`;
+if(RUN.lock){const l=$('#runLock');let tmr=null;const st=e=>{e.preventDefault();tmr=setTimeout(()=>{RUN.lock=false;beep(660);drawRun()},2000)},en=()=>clearTimeout(tmr);l.addEventListener('touchstart',st,{passive:false});l.addEventListener('mousedown',st);l.addEventListener('touchend',en);l.addEventListener('mouseup',en)}}
+document.getElementById('runSheet').addEventListener('click',e=>{const b=e.target.closest('[data-run]');if(!b||!RUN||RUN.lock)return;const a=b.dataset.run;
+if(a==='pause'){if(RUN.paused){RUN.t0=Date.now();RUN.paused=false;say('Reprise.');RUN.resetNext=true}else{RUN.acc+=(Date.now()-RUN.t0)/1000;RUN.paused=true;say('Pause.')}drawRun()}
+else if(a==='lock'){RUN.lock=true;drawRun()}
+else if(a==='end'){if(!RUN.armed){RUN.armed=true;b.textContent='Confirmer la fin';setTimeout(()=>{if(RUN)RUN.armed=false},4000);return}endRun()}});
+document.addEventListener('visibilitychange',()=>{if(!RUN)return;if(document.hidden)RUN.hiddenAt=Date.now();else{if(RUN.hiddenAt&&Date.now()-RUN.hiddenAt>15000)toast('Le GPS a pu être coupé pendant que l\'appli était fermée : la distance est estimée en ligne droite.');RUN.hiddenAt=null;wake(true)}});
+function endRun(){const r=RUN;navigator.geolocation.clearWatch(r.watch);clearInterval(r.iv);wake(false);const el=runElapsed(),km=r.dist/1000;RUN=null;
+if(km<0.05){$('#runSheet').hidden=true;toast('Sortie trop courte, non enregistrée');return}
+const kcal=runKcal(r.mode,km,el);const step=Math.max(1,Math.ceil(r.pts.length/300));const pts=r.pts.filter((p,i)=>i%step===0||i===r.pts.length-1).map(p=>({la:+p.la.toFixed(5),lo:+p.lo.toFixed(5)}));
+const H=lsGet('runs')||[];const run={d:today,mode:r.mode,km:+km.toFixed(2),sec:Math.round(el),kcal,splits:r.splits.map(Math.round),pts};H.push(run);if(H.length>100)H.splice(0,H.length-100);save('runs',H);
+D.workouts.push({name:GM[r.mode].lab+' '+km.toFixed(1).replace('.',',')+' km',active:kcal});save('d-'+today,D);renderToday();
+say(`Bravo ! ${km.toFixed(2).replace('.',' virgule ')} kilomètres en ${spoken(el)}.`);showRun(run)}
+function showRun(run){$('#runSheet').hidden=false;const best=run.splits.length?Math.min(...run.splits):null;
+$('#runSheet').innerHTML=`<div class="sheetIn"><div class="cardHead"><h2 style="margin:0">${GM[run.mode].lab} du ${frDate(run.d)}</h2><button class="x" data-rclose="1" aria-label="Fermer">×</button></div>
+<div class="runGrid"><div><div class="rv">${String(run.km).replace('.',',')}</div><div class="small mut">km</div></div><div><div class="rv">${mmss(run.sec)}</div><div class="small mut">durée</div></div><div><div class="rv">${run.mode==='velo'?(run.km/(run.sec/3600)).toFixed(1).replace('.',','):paceTxt(run.sec,run.km).replace(' /km','')}</div><div class="small mut">${run.mode==='velo'?'km/h':'allure /km'}</div></div></div>
+${routeSvg(run.pts,320,170)}
+<p><b>${run.kcal} kcal actives</b> ajoutées à ton journal : tu peux en remanger la moitié (${Math.round(run.kcal/2)} kcal).</p>
+${run.splits.length?`<h3>Temps par kilomètre</h3>${run.splits.map((s,i)=>`<div class="row small"><div class="grow">Km ${i+1}</div><b style="color:${s===best?'var(--ok)':'inherit'}">${mmss(s)}</b></div>`).join('')}`:''}
+<div class="btns"><button class="pri" data-rclose="1">Fermer</button></div></div>`;
+$('#runSheet').onclick=e=>{if(e.target.closest('[data-rclose]')){$('#runSheet').hidden=true;$('#runSheet').onclick=null;renderRuns()}}}
+function renderRuns(){const box=document.getElementById('runBox');if(!box)return;const H=lsGet('runs')||[];const wk=H.filter(r=>(new Date(today)-new Date(r.d))/864e5<7);const kmw=wk.reduce((a,r)=>a+r.km,0);
+const bestRun=H.filter(r=>r.mode==='course'&&r.km>=1).sort((a,b)=>a.sec/a.km-b.sec/b.km)[0];
+box.innerHTML=`<div class="cardHead"><span class="eyebrow">Course, marche, vélo · GPS</span><span class="small mut">${kmw?kmw.toFixed(1).replace('.',',')+' km cette semaine':''}</span></div>
+<div class="btns" style="margin-top:0"><button class="pri" data-gps="course">Courir</button><button data-gps="marche">Marcher</button><button data-gps="velo">Vélo</button></div>
+<p class="small mut" style="margin:8px 0">Temps, distance, allure, tracé et annonce vocale à chaque kilomètre. Garde l'appli ouverte et utilise « Verrouiller l'écran » dans ta poche. Tu as une montre (Apple Watch, Strava) ? Elle reste plus précise : note juste ses calories actives dans « Jour ».</p>
+${bestRun?`<p class="small" style="margin:0 0 6px">Meilleure allure en course : <b>${paceTxt(bestRun.sec,bestRun.km)}</b> (${String(bestRun.km).replace('.',',')} km le ${frDate(bestRun.d)})</p>`:''}
+${H.slice(-5).reverse().map((r,i)=>`<div class="row"><div class="grow"><b>${GM[r.mode].lab} · ${String(r.km).replace('.',',')} km</b><div class="small mut">${frDate(r.d)} · ${mmss(r.sec)} · ${r.mode==='velo'?(r.km/(r.sec/3600)).toFixed(1).replace('.',',')+' km/h':paceTxt(r.sec,r.km)} · ${r.kcal} kcal</div></div><button data-rshow="${H.length-1-i}">Voir</button></div>`).join('')}`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-gps],[data-rshow]');if(!b)return;if(b.dataset.gps)startRun(b.dataset.gps);else{const H=lsGet('runs')||[];showRun(H[+b.dataset.rshow])}});
+
 /* ---------- navigation ---------- */
 const VIEWS=['accueil','jour','coach','menus','sport','sante','poids','douleur','profil'];
-function route(){const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):'accueil';if(v==='accueil')renderHome();if(v==='menus')renderMenus();if(v==='sport')renderSport();if(v==='poids')renderMens();if(v==='douleur')renderPainLog();document.querySelectorAll('section.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));if(v==='poids')drawW();window.scrollTo(0,0)}
+function route(){const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):'accueil';if(v==='accueil')renderHome();if(v==='menus')renderMenus();if(v==='sport'){renderSport();renderRuns()}if(v==='poids')renderMens();if(v==='douleur')renderPainLog();document.querySelectorAll('section.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));if(v==='poids')drawW();window.scrollTo(0,0)}
 addEventListener('hashchange',route);
 function renderAll(){renderArt();renderToday();renderChat();renderHealth();renderWeight();renderPain();renderProfile();route()}
 function status(){$('#status').textContent='Sur ce téléphone'}

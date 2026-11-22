@@ -75,8 +75,8 @@ label{font-size:14px;color:var(--mut);display:block}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px}
 details summary{cursor:pointer;font-weight:600;min-height:40px;display:flex;align-items:center}
 .alert{border-left:4px solid var(--warn)}.good{border-left:4px solid var(--ok)}
-nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);z-index:5}
-nav.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:58px;font-size:12.5px;font-weight:600;color:var(--mut);text-decoration:none;gap:3px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:58px;font-size:11.5px;font-weight:600;color:var(--mut);text-decoration:none;gap:3px}
 nav.tabs a svg{width:22px;height:22px}nav.tabs a.on{color:var(--ink)}nav.tabs a.on svg{color:var(--brand)}
 nav.tabs{background:color-mix(in srgb,var(--bg) 92%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 .chat{display:flex;flex-direction:column;gap:10px;margin:12px 0}
@@ -102,6 +102,12 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 .tick{min-width:40px;min-height:40px;padding:0;border-radius:50%;font-size:18px;color:var(--line);flex:none}.tick.on{background:var(--ok);border-color:var(--ok);color:#fff}
 .glasses{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
 .score{font-size:clamp(40px,11vw,56px);font-weight:800;line-height:1}
+.mtabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin-top:8px}
+.mtabs button{border:0;min-height:40px;border-radius:10px;background:none}.mtabs button.on{background:var(--brand);color:light-dark(#fff,#10130f)}
+.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:14px}
+.days button{min-height:54px;padding:0;flex-direction:column;gap:0;font-size:14px;border-radius:12px}
+.days button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}.days .bx{font:500 9.5px 'DM Mono',monospace;color:var(--acc);text-transform:uppercase}
+.days button.on .bx{color:var(--bg);opacity:.8}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}.ring{transition:none!important}}
 @media(max-width:600px){.dial{grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:12px}h1{font-size:26px}}
 @media(max-width:400px){.dial{grid-template-columns:1fr}.dial svg{max-width:210px;margin:0 auto;display:block}.grid4{grid-template-columns:1fr 1fr}}
@@ -137,6 +143,7 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
     <div class="txt"><div class="eyebrow" style="color:rgba(255,255,255,.8)">Idée repas</div><h3 style="font-size:21px;color:#fff;margin-top:6px">40 g de protéines pour moins de 600 kcal</h3></div>
     <span class="go"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
   </a>
+  <a class="card linkCard" href="#menus"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 1.5-2.5 4-2.5 7H17V3zM17 10v11"/></svg><div style="flex:1"><b>Menus de la semaine</b><div class="mut small">Repas du jour et liste de courses</div></div><span class="mut">→</span></a>
   <a class="card linkCard" href="#douleur"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg><div style="flex:1"><b>Une douleur, une tendinite ?</b><div class="mut small">Exercices doux et vidéos par zone</div></div><span class="mut">→</span></a>
 </section>
 
@@ -238,6 +245,19 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
   </div>
 </section>
 
+<!-- MENUS -->
+<section class="view" id="v-menus">
+  <div class="top"><h1>Menus</h1></div>
+  <div class="mtabs" id="mTabs"><button data-mt="menus" class="on">Semaine</button><button data-mt="courses">Courses</button></div>
+  <div id="mMenus"><div class="days" id="days"></div><div id="dayInfo"></div><div id="meals"></div>
+    <p class="mut small">Sans poisson ni produits de la mer. Les repas s'échangent entre eux : un midi peut devenir un soir.</p></div>
+  <div id="mCourses" hidden>
+    <div class="card small" id="cHead" style="margin-top:14px"></div>
+    <div class="btns"><button class="pri" id="cCopy">Copier la liste</button><button id="cHide">Masquer les articles pris</button><button id="cReset">Tout décocher</button></div>
+    <div id="cList"></div>
+  </div>
+</section>
+
 <!-- SANTÉ -->
 <section class="view" id="v-sante">
   <div class="top"><h1>Santé &amp; forme</h1></div>
@@ -299,8 +319,9 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 
 <nav class="tabs" id="tabs">
   <a href="#accueil" data-v="accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>Accueil</a>
-  <a href="#jour" data-v="jour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>Aujourd'hui</a>
+  <a href="#jour" data-v="jour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>Jour</a>
   <a href="#coach" data-v="coach"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3"/><circle cx="12" cy="12" r="3"/></svg>Scanner</a>
+  <a href="#menus" data-v="menus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 1.5-2.5 4-2.5 7H17V3zM17 10v11"/></svg>Menus</a>
   <a href="#sante" data-v="sante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>Santé</a>
   <a href="#poids" data-v="poids"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 3 8-8M15 7h5v5"/></svg>Progrès</a>
 </nav>
@@ -622,13 +643,41 @@ $('#exp').onclick=async()=>{const txt=JSON.stringify({app:'coachseche',v:1,date:
 try{const f=new File([txt],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Sauvegarde Coach Sèche'});return}}catch(e){if(e&&e.name==='AbortError')return}
 const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)};
 function importText(t){let o;try{o=JSON.parse(t)}catch(e){toast('Données illisibles');return}const data=o&&o.data;if(!data||typeof data!=='object'){toast('Ce n\'est pas une sauvegarde Coach Sèche');return}
-let n=0;for(const k of Object.keys(data)){if(/^(profile|weights|d-\d{4}-\d{2}-\d{2})$/.test(k)){lsSet(k,data[k]);n++}}
+let n=0;for(const k of Object.keys(data)){if(/^(profile|weights|courses|d-\d{4}-\d{2}-\d{2})$/.test(k)){lsSet(k,data[k]);n++}}
 toast(n+' éléments importés');setTimeout(()=>location.reload(),900)}
 $('#impB').onclick=()=>importText($('#impT').value.trim());
 $('#impF').addEventListener('change',async e=>{const f=e.target.files[0];if(f)importText(await f.text());e.target.value=''});
+/* ---------- MENUS & COURSES ---------- */
+const MENU=[{"box": false, "meals": [["Matin", "Overnight oats cacao-banane", "Skyr 200 g, avoine 40 g, ½ banane, 1 c. à café de cacao, cannelle, 1 c. à soupe de graines de lin. À préparer la veille.", 385, 27], ["Midi", "Poke bowl au poulet teriyaki", "Riz 150 g cuit, poulet 150 g mariné soja-gingembre-ail, edamame, concombre, carotte râpée, sésame. Se mange froid.", 565, 53], ["Collation", "Whey chocolat + pomme", "1 dose de whey dans de l'eau, 1 pomme.", 200, 25], ["Soir", "Bowl de poulet tikka", "Poulet 150 g mariné yaourt-épices tikka-ail, riz basmati 150 g cuit, raita (yaourt grec, concombre, menthe).", 500, 50]]}, {"box": true, "meals": [["Matin", "Œufs à la turque", "3 œufs pochés sur yaourt grec 0 % à l'ail, filet de paprika, 1 tranche de pain complet.", 365, 32], ["Midi", "2 wraps fajitas à la dinde", "2 tortillas complètes, dinde 150 g au paprika fumé, cumin et citron vert, poivrons-oignons grillés, salsa, 1 c. à soupe de crème légère.", 620, 43], ["Avant la boxe", "Skyr, banane et miel", "Skyr 150 g, 1 banane, 1 c. à café de miel. 1 h 30 avant la séance.", 210, 16], ["Après la boxe", "Chili con carne au cacao", "Bœuf 5 % 150 g, haricots rouges 100 g, tomate, paprika fumé, cacao, riz 150 g cuit, 1 cuillère de yaourt grec, coriandre.", 590, 46]]}, {"box": false, "meals": [["Matin", "Fromage blanc, pomme poêlée, granola", "Fromage blanc 0 % 250 g, 1 pomme poêlée à la cannelle (sans beurre), granola 30 g.", 325, 22], ["Midi", "Pâtes arrabbiata aux boulettes de dinde", "Pâtes complètes 80 g crues, boulettes de dinde hachée 150 g ail-persil, sauce tomate pimentée, basilic, parmesan 10 g.", 550, 48], ["Collation", "Whey + banane", "1 dose de whey, 1 banane.", 220, 25], ["Soir", "Filet mignon moutarde-miel", "Filet mignon de porc 150 g, moutarde à l'ancienne et 1 c. à café de miel, purée de patate douce au cumin 200 g, haricots verts.", 470, 39], ["Dessert", "Yaourt grec, miel et noix", "Yaourt grec 0 % 150 g, 1 c. à café de miel, 10 g de noix.", 170, 16]]}, {"box": true, "meals": [["Matin", "Pancakes protéinés à la banane", "1 banane écrasée, 2 œufs, avoine 30 g, skyr 100 g, fruits rouges 100 g. Poêle antiadhésive.", 465, 30], ["Midi", "Salade grecque au poulet", "Poulet 150 g citron-origan, boulgour 150 g cuit, concombre, tomate, oignon rouge, feta 30 g, 5 olives, 1 c. à café d'huile d'olive.", 565, 54], ["Avant la boxe", "Skyr + banane", "Skyr 150 g, 1 banane. Ou 1 tranche de pain complet au miel.", 190, 16], ["Après la boxe", "Burger maison et frites au four", "Pain burger complet, steak haché 5 % 125 g, 1 tranche de cheddar, oignon, cornichons, moutarde, salade. Frites au four : 150 g de pommes de terre + 1 c. à café d'huile.", 550, 40]]}, {"box": false, "meals": [["Matin", "Tartine avocat-œuf + skyr", "1 tranche de pain complet, ¼ d'avocat, 2 œufs, piment d'Espelette. Skyr 150 g à côté.", 400, 31], ["Midi", "Dhal de lentilles corail et poulet", "Lentilles corail 60 g crues, lait de coco allégé 50 ml, curcuma, gingembre, poulet grillé 100 g, riz 80 g cuit.", 515, 47], ["Collation", "Whey + pomme", "1 dose de whey, 1 pomme.", 200, 25], ["Soir", "Bò bún au bœuf citronnelle", "Bœuf 120 g mariné citronnelle-ail, vermicelles de riz 60 g, crudités, menthe, coriandre, cacahuètes 10 g, sauce soja-citron vert (sans nuoc-mâm).", 490, 37]]}, {"box": false, "meals": [["Matin", "Shakshuka", "3 œufs cuits dans une sauce tomate-poivrons au cumin, feta 20 g, 1 tranche de pain. Poêle antiadhésive.", 435, 27], ["Midi", "Velouté butternut-gingembre, poulet, houmous", "Velouté maison 300 g, poulet 100 g, 1 tranche de pain + houmous 30 g.", 470, 39], ["Collation", "Fromage blanc + amandes", "Fromage blanc 0 % 250 g, 15 g d'amandes.", 205, 22], ["Soir", "Repas libre", "Pizza, burger, resto… Environ 800 kcal. Sans produits de la mer. 25 min de vélo compensent le léger dépassement.", 800, 40]]}, {"box": false, "meals": [["Matin", "Overnight oats cacao-banane", "Skyr 200 g, avoine 40 g, ½ banane, cacao, cannelle, graines de lin.", 385, 27], ["Midi", "Poulet rôti citron-ail-thym", "Poulet rôti sans la peau 150 g, pommes de terre grenaille 200 g au romarin (1 c. à soupe d'huile), haricots verts.", 535, 52], ["Collation", "Skyr + fruit", "Skyr 150 g, 1 kiwi ou 1 pomme.", 170, 15], ["Soir", "Omelette champignons-oignons-parmesan", "3 œufs, champignons, oignon, parmesan 10 g, salade, 1 tranche de pain, 1 c. à café d'huile.", 435, 31]]}];
+const COURSES=[["Viandes", [["Blancs de poulet", "650 g"], ["Poulet entier (dimanche)", "1"], ["Dinde en émincé", "150 g"], ["Dinde hachée", "150 g"], ["Bœuf haché 5 %", "275 g (chili + 1 steak)"], ["Bœuf à griller (rumsteck)", "120 g"], ["Filet mignon de porc", "150 g (congèle le reste)"]]], ["Frais", [["Skyr nature", "1,1 kg"], ["Fromage blanc 0 %", "500 g"], ["Yaourt grec 0 %", "400 g"], ["Œufs", "15"], ["Feta", "50 g"], ["Parmesan", "20 g"], ["Cheddar en tranches", "1 tranche"], ["Crème légère", "1 petite brique"], ["Houmous", "1 petit pot"]]], ["Fruits", [["Bananes", "6"], ["Pommes", "4"], ["Kiwi", "1"], ["Avocat", "1"], ["Citrons jaunes", "2"], ["Citrons verts", "2"], ["Fruits rouges surgelés", "1 sachet"]]], ["Légumes", [["Concombres", "2"], ["Tomates", "3"], ["Poivrons", "3"], ["Oignons (dont 1 rouge)", "4"], ["Carottes", "3"], ["Champignons", "150 g"], ["Patate douce", "1 (200 g)"], ["Pommes de terre", "350 g"], ["Courge butternut", "1 petite"], ["Salade", "1"], ["Haricots verts surgelés", "1 sachet (450 g)"], ["Edamame surgelés", "1 sachet"], ["Ail", "1 tête"], ["Gingembre frais", "1 morceau"], ["Citronnelle", "1 tige"], ["Menthe, coriandre, persil, basilic", "1 bouquet de chaque"]]], ["Féculents et pain", [["Flocons d'avoine", "110 g"], ["Granola", "30 g"], ["Riz basmati", "200 g cru"], ["Pâtes complètes", "80 g"], ["Boulgour", "60 g cru"], ["Vermicelles de riz", "60 g"], ["Lentilles corail", "60 g"], ["Haricots rouges", "1 petite boîte"], ["Tortillas complètes", "2"], ["Pain complet tranché", "1 paquet"], ["Pain burger complet", "1"]]], ["Épicerie", [["Tomates concassées", "2 boîtes de 400 g"], ["Lait de coco allégé", "1 petite brique"], ["Salsa", "1 pot"], ["Olives", "1 petit pot"], ["Cornichons", "1 bocal"], ["Cacahuètes non salées", "1 petit sachet"], ["Amandes", "1 sachet"], ["Noix", "1 sachet"], ["Graines de lin moulues", "1 sachet"], ["Graines de sésame", "1 sachet"]]], ["Placard (vérifie avant d'acheter)", [["Whey", "4 doses"], ["Huile d'olive / huile de colza", ""], ["Sauce soja salée réduite", ""], ["Miel", ""], ["Moutarde à l'ancienne", ""], ["Cacao non sucré", ""], ["Épices : cannelle, cumin, paprika fumé, tikka ou garam masala, curcuma, origan, thym, romarin, piment d'Espelette", ""]]]];
+const JOURS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+let mDay=(new Date().getDay()+6)%7,mTab='menus';
+let CS=lsGet('courses')||{c:{},hide:false};
+function renderMenus(){
+document.querySelectorAll('#mTabs button').forEach(b=>b.classList.toggle('on',b.dataset.mt===mTab));$('#mMenus').hidden=mTab!=='menus';$('#mCourses').hidden=mTab!=='courses';
+const td=(new Date().getDay()+6)%7;
+$('#days').innerHTML=JOURS.map((j,i)=>`<button data-md="${i}" class="${i===mDay?'on':''}" aria-label="${j}">${j.slice(0,3)}${MENU[i].box?'<span class="bx">boxe</span>':i===td?'<span class="bx" style="color:var(--mut)">auj.</span>':''}</button>`).join('');
+const M=MENU[mDay],k=M.meals.reduce((a,m)=>a+m[3],0),p=M.meals.reduce((a,m)=>a+m[4],0);
+$('#dayInfo').innerHTML=`<div class="cardHead" style="margin:14px 0 4px"><h2 style="margin:0">${JOURS[mDay]}${M.box?' · boxe':''}</h2><span class="mut small">≈ ${fmt(k)} kcal · ${p} g prot.</span></div>${M.box?`<div class="card small" style="background:var(--sand);border:0;margin-top:6px"><b>Jour de boxe.</b> Ajoute ta séance dans « Jour » : la moitié des calories actives s'ajoute à ton budget (environ +250 kcal pour 500 actives). Bois 0,5 à 0,75 L par heure de boxe.</div>`:''}`;
+$('#meals').innerHTML=M.meals.map((m,j)=>{const done=D.items.some(i=>i.name===m[1]);return `<div class="card meal"><div class="eyebrow" style="color:var(--brand)">${esc(m[0])}</div><h3 style="margin:6px 0 4px">${esc(m[1])}</h3><p class="small mut" style="margin:0">${esc(m[2])}</p><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px"><span class="small"><b>${fmt(m[3])} kcal</b> · <span style="color:var(--pro)">${m[4]} g prot.</span></span><button data-madd="${j}" ${done?'disabled':''}>${done?'Ajouté':'Ajouter au journal'}</button></div></div>`}).join('');
+const all=COURSES.flatMap(([,it])=>it.map(x=>x[0])),got=all.filter(n=>CS.c[n]).length;
+$('#cHead').innerHTML=`<b>${got} / ${all.length} articles pris</b><div class="bar"><i style="width:${got/all.length*100}%;background:var(--brand)"></i></div><span class="mut">Quantités pour toi seul, pour la semaine. Pour les repas en famille, multiplie les portions du soir.</span>`;
+$('#cList').innerHTML=COURSES.map(([r,it])=>{const rows=it.filter(x=>!(CS.hide&&CS.c[x[0]]));if(!rows.length)return'';return `<h2>${esc(r)}</h2><div class="card" style="padding:4px 16px">${rows.map(([n,q])=>`<div class="row"><button class="tick ${CS.c[n]?'on':''}" data-ci="${esc(n)}" aria-label="${esc(n)}">✓</button><div class="grow" style="${CS.c[n]?'text-decoration:line-through;color:var(--mut)':''}">${esc(n)}</div><div class="mut small" style="text-align:right">${esc(q)}</div></div>`).join('')}</div>`}).join('')||'<p class="mut">Tout est pris. Bonnes courses !</p>';
+$('#cHide').textContent=CS.hide?'Afficher tout':'Masquer les articles pris'}
+$('#v-menus').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+if(d.mt){mTab=d.mt}
+else if(d.md!==undefined){mDay=+d.md}
+else if(d.madd!==undefined){const m=MENU[mDay].meals[+d.madd];addItem({name:m[1],kcal:m[3],prot:m[4],detail:'Menu · '+JOURS[mDay]+' · '+m[0]});toast('Ajouté au journal d\'aujourd\'hui')}
+else if(d.ci){CS.c[d.ci]=!CS.c[d.ci];save('courses',CS)}
+else if(b.id==='cReset'){CS.c={};save('courses',CS)}
+else if(b.id==='cHide'){CS.hide=!CS.hide;save('courses',CS)}
+else if(b.id==='cCopy'){const t='Courses Coach Sèche\n'+COURSES.map(([r,it])=>{const l=it.filter(x=>!CS.c[x[0]]);return l.length?'\n'+r+' :\n'+l.map(([n,q])=>'- '+n+(q?' ('+q+')':'')).join('\n'):''}).join('\n');try{await navigator.clipboard.writeText(t.trim());toast('Liste copiée')}catch(err){toast('Copie refusée par le téléphone')}return}
+else return;
+renderMenus()});
+
 /* ---------- navigation ---------- */
-const VIEWS=['accueil','jour','coach','sante','poids','douleur','profil'];
-function route(){const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):'accueil';if(v==='accueil')renderHome();document.querySelectorAll('section.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));if(v==='poids')drawW();window.scrollTo(0,0)}
+const VIEWS=['accueil','jour','coach','menus','sante','poids','douleur','profil'];
+function route(){const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):'accueil';if(v==='accueil')renderHome();if(v==='menus')renderMenus();document.querySelectorAll('section.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));if(v==='poids')drawW();window.scrollTo(0,0)}
 addEventListener('hashchange',route);
 function renderAll(){renderArt();renderToday();renderChat();renderHealth();renderWeight();renderPain();renderProfile();route()}
 function status(){$('#status').textContent='Sur ce téléphone'}

@@ -7,12 +7,12 @@
 <meta name="theme-color" content="#f3efe7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151411" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Coach Sèche">
+<meta name="apple-mobile-web-app-title" content="Coach">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
-<title>Coach Sèche</title>
+<title>Coach</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -126,7 +126,7 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 <body>
 <main>
 <header class="apphead">
-  <div class="name"><img src="icon-192.png" alt="" width="28" height="28" style="border-radius:8px">Coach Sèche</div>
+  <div class="name"><img src="icon-192.png" alt="" width="28" height="28" style="border-radius:8px">Coach</div>
   <span class="chip" id="status">Chargement…</span>
   <a class="gear" href="#profil" aria-label="Profil et objectifs"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></a>
 </header>
@@ -661,10 +661,10 @@ P={...P,goalW:($('#pGoal').value===''?null:n('#pGoal',null)),water:n('#pWat',P.w
 
 
 function allData(){const data={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(LS))data[k.slice(LS.length)]=JSON.parse(localStorage.getItem(k))}}catch(e){}return data}
-$('#exp').onclick=async()=>{const txt=JSON.stringify({app:'coachseche',v:1,date:today,data:allData()});const name='coach-seche-'+today+'.json';
-try{const f=new File([txt],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Sauvegarde Coach Sèche'});return}}catch(e){if(e&&e.name==='AbortError')return}
+$('#exp').onclick=async()=>{const txt=JSON.stringify({app:'coachseche',v:1,date:today,data:allData()});const name='coach-'+today+'.json';
+try{const f=new File([txt],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Sauvegarde Coach'});return}}catch(e){if(e&&e.name==='AbortError')return}
 const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)};
-function importText(t){let o;try{o=JSON.parse(t)}catch(e){toast('Données illisibles');return}const data=o&&o.data;if(!data||typeof data!=='object'){toast('Ce n\'est pas une sauvegarde Coach Sèche');return}
+function importText(t){let o;try{o=JSON.parse(t)}catch(e){toast('Données illisibles');return}const data=o&&o.data;if(!data||typeof data!=='object'){toast('Ce n\'est pas une sauvegarde Coach');return}
 let n=0;for(const k of Object.keys(data)){if(/^(profile|weights|courses|plan|myrec|frigo|d-\d{4}-\d{2}-\d{2})$/.test(k)){lsSet(k,data[k]);n++}}
 toast(n+' éléments importés');setTimeout(()=>location.reload(),900)}
 $('#impB').onclick=()=>importText($('#impT').value.trim());
@@ -771,7 +771,7 @@ else if(b.id==='cReset'){CS.c={};save('courses',CS)}
 else if(b.id==='cHide'){CS.hide=!CS.hide;save('courses',CS)}
 else if(b.id==='cCopy'){const m=new Map();PLAN.forEach(day=>day.forEach(x=>rec(x.r).ing.forEach(s=>{const g=ingParse(s),k=g.name+'|'+g.u;const o=m.get(k)||{...g,q:0};o.q+=g.q;m.set(k,o)})));
 const by={};[...m.values()].filter(o=>!CS.c[o.name]&&o.ray!=='Placard').forEach(o=>{(by[o.ray]=by[o.ray]||[]).push('- '+o.name+(o.q?' ('+qfmt(o.q,o.u)+')':''))});
-const t='Courses Coach Sèche\n'+Object.entries(by).map(([r,l])=>'\n'+r+' :\n'+l.join('\n')).join('\n');try{await navigator.clipboard.writeText(t);toast('Liste copiée')}catch(err){toast('Copie refusée par le téléphone')}return}
+const t='Courses Coach\n'+Object.entries(by).map(([r,l])=>'\n'+r+' :\n'+l.join('\n')).join('\n');try{await navigator.clipboard.writeText(t);toast('Liste copiée')}catch(err){toast('Copie refusée par le téléphone')}return}
 else return;
 renderMenus()});
 

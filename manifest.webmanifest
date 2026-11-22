@@ -1,6 +1,6 @@
 {
-  "name": "Coach Sèche",
-  "short_name": "Coach Sèche",
+  "name": "Coach",
+  "short_name": "Coach",
   "description": "Suivi calories, protéines, sommeil, récupération et poids.",
   "lang": "fr",
   "start_url": "./#accueil",

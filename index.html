@@ -108,6 +108,9 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 .days button{min-height:54px;padding:0;flex-direction:column;gap:0;font-size:14px;border-radius:12px}
 .days button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}.days .bx{font:500 9.5px 'DM Mono',monospace;color:var(--acc);text-transform:uppercase}
 .days button.on .bx{color:var(--bg);opacity:.8}
+.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.shade{position:absolute;inset:0;background:linear-gradient(100deg,rgba(20,14,8,.78) 0%,rgba(20,14,8,.45) 55%,rgba(20,14,8,.12) 100%),linear-gradient(180deg,rgba(20,14,8,0) 45%,rgba(20,14,8,.55) 100%)}
+.hero{position:relative}.hero .cap{position:absolute;left:14px;bottom:10px;color:#fff;font:500 11.5px 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.5)}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}.ring{transition:none!important}}
 @media(max-width:600px){.dial{grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:12px}h1{font-size:26px}}
 @media(max-width:400px){.dial{grid-template-columns:1fr}.dial svg{max-width:210px;margin:0 auto;display:block}.grid4{grid-template-columns:1fr 1fr}}
@@ -125,7 +128,8 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 <section class="view" id="v-accueil">
   <div class="heroP">
     <svg id="bowl1" viewBox="0 0 400 380" preserveAspectRatio="xMaxYMid slice" role="img" aria-label="Bol de légumes, pois chiches, patate douce et avocat"></svg>
-    <div class="txt">
+    <img class="photo" src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&q=70" alt="Bol de légumes, pois chiches, patate douce et avocat" onerror="this.remove()"><div class="shade"></div>
+    <div class="txt" style="z-index:1">
       <div class="eyebrow" id="greet" style="color:rgba(255,255,255,.85)">Bonjour</div>
       <h1 class="heroH">Mange bien. Reste calé. Perds du gras.</h1>
       <p>Des repas qui tiennent au corps, un objectif fait pour toi, et des progrès que tu vois.</p>
@@ -140,8 +144,9 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
   <div class="card mini" id="mini"></div>
   <a class="photoCard" href="#coach" id="idea">
     <svg id="bowl2" viewBox="0 0 400 180" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"></svg>
-    <div class="txt"><div class="eyebrow" style="color:rgba(255,255,255,.8)">Idée repas</div><h3 style="font-size:21px;color:#fff;margin-top:6px">40 g de protéines pour moins de 600 kcal</h3></div>
-    <span class="go"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    <img class="photo" src="https://images.unsplash.com/photo-1658308766948-01c85ade2737?auto=format&fit=crop&w=1200&q=70" alt="" onerror="this.remove()"><div class="shade"></div>
+    <div class="txt" style="z-index:1"><div class="eyebrow" style="color:rgba(255,255,255,.8)">Idée repas</div><h3 style="font-size:21px;color:#fff;margin-top:6px">Chili patate douce, haricots rouges, avocat</h3></div>
+    <span class="go" style="z-index:1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
   </a>
   <a class="card linkCard" href="#menus"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 1.5-2.5 4-2.5 7H17V3zM17 10v11"/></svg><div style="flex:1"><b>Menus de la semaine</b><div class="mut small">Repas du jour et liste de courses</div></div><span class="mut">→</span></a>
   <a class="card linkCard" href="#douleur"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg><div style="flex:1"><b>Une douleur, une tendinite ?</b><div class="mut small">Exercices doux et vidéos par zone</div></div><span class="mut">→</span></a>
@@ -248,6 +253,7 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 <!-- MENUS -->
 <section class="view" id="v-menus">
   <div class="top"><h1>Menus</h1></div>
+  <div class="hero" data-art="menus"></div>
   <div class="mtabs" id="mTabs"><button data-mt="menus" class="on">Semaine</button><button data-mt="courses">Courses</button></div>
   <div id="mMenus"><div class="days" id="days"></div><div id="dayInfo"></div><div id="meals"></div>
     <p class="mut small">Sans poisson ni produits de la mer. Les repas s'échangent entre eux : un midi peut devenir un soir.</p></div>
@@ -314,6 +320,7 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
     <div class="btns"><button class="pri" id="exp">Exporter mes données</button><label class="btn" for="impF">Importer un fichier</label><input type="file" id="impF" accept="application/json,.json,text/plain" hidden></div>
     <details style="margin-top:8px"><summary>Coller des données</summary><textarea id="impT" rows="4" placeholder="Colle ici les données copiées depuis l'ancienne appli"></textarea><div class="btns"><button id="impB">Importer</button></div></details>
   </div>
+  <p class="mut small" style="margin-top:18px">Photos : Anna Pelzer, Svitlana, Ella Olsson, Julia, Vadim Matei et Vitaly Gariev, sur Unsplash (licence Unsplash, utilisation libre).</p>
 </section>
 </main>
 
@@ -579,7 +586,9 @@ douleur:`<svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice" role="i
 <rect x="118" y="134" width="190" height="10" rx="5" fill="#0b7d72"/>
 <g stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M206 96L240 108L243 134" stroke="#1f3b3a" stroke-width="10"/><path d="M206 96L176 132L146 134" stroke="#1f3b3a" stroke-width="10"/><path d="M209 60L205 96" stroke="#e4572e" stroke-width="13"/><path d="M206 62L200 34L203 14M212 62L220 34L224 16" stroke="#e4572e" stroke-width="7"/></g>
 <circle cx="212" cy="46" r="9" fill="#f2c4a2"/><path d="M203 43a9 9 0 0 1 18 0" fill="#1f3b3a"/></svg>`};
-function renderArt(){document.querySelectorAll('.hero').forEach(h=>{if(!h.firstChild)h.innerHTML=ART[h.dataset.art]||''})}
+const PHOTOS={"menus": "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=1200&q=70", "sante": "https://images.unsplash.com/photo-1585128719715-46776b56a0d1?auto=format&fit=crop&w=1200&q=70", "poids": "https://images.unsplash.com/photo-1786352260444-20539d92fee0?auto=format&fit=crop&w=1200&q=70", "douleur": "https://images.unsplash.com/photo-1758521959095-ed05f99551c3?auto=format&fit=crop&w=1200&q=70"};
+const CAPS={menus:"Ta semaine",sante:"Dormir mieux",poids:"Pas à pas",douleur:"Prendre soin de toi"};
+function renderArt(){document.querySelectorAll('.hero').forEach(h=>{if(h.firstChild)return;const k=h.dataset.art;h.innerHTML=(ART[k]||'')+(PHOTOS[k]?`<img class="photo" src="${PHOTOS[k]}" alt="" onerror="this.remove()"><div class="shade" style="background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.45) 100%)"></div><span class="cap">${CAPS[k]}</span>`:'')})}
 
 /* ---------- ACCUEIL ---------- */
 function rng(s){return()=>{s=(s*16807)%2147483647;return (s-1)/2147483646}}

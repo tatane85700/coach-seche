@@ -116,6 +116,8 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 .sheetIn{background:var(--bg);width:100%;max-width:640px;margin:0 auto;max-height:88vh;overflow:auto;border-radius:20px 20px 0 0;padding:16px 16px calc(24px + env(safe-area-inset-bottom))}
 .mb button{min-height:38px;padding:0 12px;font-size:14px}.recipe{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:15px}.recipe h4{margin:8px 0 4px;font-size:15px}.recipe ul,.recipe ol{margin:0;padding-left:20px}.recipe li{margin:4px 0}
 .sem{cursor:pointer}.chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.mtabs button{font-size:14px;padding:0 4px}
+.fchips{display:flex;flex-wrap:wrap;gap:6px}.fchips button{min-height:38px;font-size:14px;border-radius:19px;padding:0 12px}.fchips button.on{background:var(--brand);border-color:var(--brand);color:light-dark(#fff,#10130f)}
 @media(prefers-reduced-motion:reduce){.toast{transition:none}.ring{transition:none!important}}
 @media(max-width:600px){.dial{grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:12px}h1{font-size:26px}}
 @media(max-width:400px){.dial{grid-template-columns:1fr}.dial svg{max-width:210px;margin:0 auto;display:block}.grid4{grid-template-columns:1fr 1fr}}
@@ -154,6 +156,7 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
     <span class="go" style="z-index:1"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
   </a>
   <a class="card linkCard" href="#menus"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 1.5-2.5 4-2.5 7H17V3zM17 10v11"/></svg><div style="flex:1"><b>Menus de la semaine</b><div class="mut small">Repas du jour et liste de courses</div></div><span class="mut">→</span></a>
+  <a class="card linkCard" href="#menus" id="goFrigo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 10h12M9 5v2M9 13v3"/></svg><div style="flex:1"><b>Qu'est-ce que je cuisine ?</b><div class="mut small">Idées avec ce qu'il reste dans ton frigo</div></div><span class="mut">→</span></a>
   <a class="card linkCard" href="#douleur"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg><div style="flex:1"><b>Une douleur, une tendinite ?</b><div class="mut small">Exercices doux et vidéos par zone</div></div><span class="mut">→</span></a>
 </section>
 
@@ -259,11 +262,12 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:7px 4px;b
 <section class="view" id="v-menus">
   <div class="top"><h1>Menus</h1></div>
   <div class="hero" data-art="menus"></div>
-  <div class="mtabs" id="mTabs" style="grid-template-columns:repeat(4,minmax(0,1fr))"><button data-mt="jour" class="on">Jour</button><button data-mt="semaine">Semaine</button><button data-mt="recettes">Recettes</button><button data-mt="courses">Courses</button></div>
+  <div class="mtabs" id="mTabs" style="grid-template-columns:repeat(5,minmax(0,1fr))"><button data-mt="jour" class="on">Jour</button><button data-mt="semaine">Semaine</button><button data-mt="recettes">Recettes</button><button data-mt="frigo">Frigo</button><button data-mt="courses">Courses</button></div>
   <div id="mJour"><div class="days" id="days"></div><div id="dayInfo"></div><div id="meals"></div>
     <p class="mut small">Sans poisson ni produits de la mer. « Changer » te propose d'autres recettes du même type. L'onglet Recettes contient toute la bibliothèque.</p></div>
   <div id="mSem" hidden></div>
   <div id="mRec" hidden></div>
+  <div id="mFrigo" hidden></div>
   <div id="mCourses" hidden>
     <div class="card small" id="cHead" style="margin-top:14px"></div>
     <div class="btns"><button class="pri" id="cCopy">Copier la liste</button><button id="cHide">Masquer les articles pris</button><button id="cReset">Tout décocher</button></div>
@@ -661,7 +665,7 @@ $('#exp').onclick=async()=>{const txt=JSON.stringify({app:'coachseche',v:1,date:
 try{const f=new File([txt],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Sauvegarde Coach Sèche'});return}}catch(e){if(e&&e.name==='AbortError')return}
 const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)};
 function importText(t){let o;try{o=JSON.parse(t)}catch(e){toast('Données illisibles');return}const data=o&&o.data;if(!data||typeof data!=='object'){toast('Ce n\'est pas une sauvegarde Coach Sèche');return}
-let n=0;for(const k of Object.keys(data)){if(/^(profile|weights|courses|plan|myrec|d-\d{4}-\d{2}-\d{2})$/.test(k)){lsSet(k,data[k]);n++}}
+let n=0;for(const k of Object.keys(data)){if(/^(profile|weights|courses|plan|myrec|frigo|d-\d{4}-\d{2}-\d{2})$/.test(k)){lsSet(k,data[k]);n++}}
 toast(n+' éléments importés');setTimeout(()=>location.reload(),900)}
 $('#impB').onclick=()=>importText($('#impT').value.trim());
 $('#impF').addEventListener('change',async e=>{const f=e.target.files[0];if(f)importText(await f.text());e.target.value=''});
@@ -703,7 +707,7 @@ ${lst.map(r=>{const op=RB.open===r.id;return `<div class="card meal"><div class=
 <div class="btns mb"><button data-rbo="${r.id}">${op?'Fermer':'Voir la recette'}</button></div>${op?recDetail(r)+`<div class="grid2" style="margin-top:10px"><div><label for="rbD">Jour</label><select id="rbD">${JOURS.map((j,i)=>`<option value="${i}" ${i===mDay?'selected':''}>${j}</option>`).join('')}</select></div><div><label for="rbS">Moment</label><select id="rbS">${Object.keys(SLOTCAT).map(s=>`<option ${SLOTCAT[s]===(r.c==='libre'?'repas':r.c)&&!s.includes('boxe')&&s!=='Dessert'?'selected':''}>${s}</option>`).join('')}</select></div></div><div class="btns"><button class="pri" data-rbadd="${r.id}">Ajouter au planning</button></div>`:''}</div>`}).join('')||'<p class="mut">Aucune recette ne correspond.</p>'}`}
 function renderMenus(){
 document.querySelectorAll('#mTabs button').forEach(b=>b.classList.toggle('on',b.dataset.mt===mTab));
-$('#mJour').hidden=mTab!=='jour';$('#mRec').hidden=mTab!=='recettes';$('#mSem').hidden=mTab!=='semaine';$('#mCourses').hidden=mTab!=='courses';
+$('#mJour').hidden=mTab!=='jour';$('#mRec').hidden=mTab!=='recettes';$('#mFrigo').hidden=mTab!=='frigo';$('#mSem').hidden=mTab!=='semaine';$('#mCourses').hidden=mTab!=='courses';
 const td=(new Date().getDay()+6)%7;
 if(mTab==='jour'){
 $('#days').innerHTML=JOURS.map((j,i)=>`<button data-md="${i}" class="${i===mDay?'on':''}" aria-label="${j}">${j.slice(0,3)}${BOX.includes(i)?'<span class="bx">boxe</span>':i===td?'<span class="bx" style="color:var(--mut)">auj.</span>':''}</button>`).join('');
@@ -715,6 +719,7 @@ if(mTab==='semaine'){
 $('#mSem').innerHTML=JOURS.map((j,i)=>{const t=dayTot(i);return `<div class="card sem" data-go="${i}"><div class="cardHead" style="margin-bottom:6px"><b>${j}${BOX.includes(i)?' <span class="tag" style="background:var(--sand);color:var(--acc)">boxe</span>':''}</b><span class="mut small">≈ ${fmt(t.k)} kcal · ${t.p} g</span></div>${PLAN[i].map(e=>`<div class="small" style="padding:3px 0"><span class="mut" style="display:inline-block;min-width:96px">${esc(e.s)}</span>${esc(rec(e.r).n)}</div>`).join('')||'<div class="small mut">Rien de prévu</div>'}</div>`}).join('')+
 `<div class="btns"><button id="rsWeek" class="${resetArm?'pri':''}">${resetArm?'Confirmer : revenir au menu type':'Revenir au menu type'}</button></div><p class="mut small">Touche un jour pour le modifier. Tes changements sont gardés sur ce téléphone.</p>`}
 if(mTab==='recettes')renderBook();
+if(mTab==='frigo')renderFrigo();
 if(mTab==='courses'){
 const m=new Map();PLAN.forEach(day=>day.forEach(e=>rec(e.r).ing.forEach(s=>{const g=ingParse(s),key=g.name+'|'+g.u;const o=m.get(key)||{...g,q:0};o.q+=g.q;m.set(key,o)})));
 const ORD=['Viandes','Frais','Fruits','Légumes','Féculents et pain','Épicerie','Mes repas','Placard'];const all=[...m.values()];
@@ -774,6 +779,85 @@ $('#v-menus').addEventListener('input',e=>{if(e.target.id==='rbQ'){RB.q=e.target
 $('#v-menus').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
 if(d.rbf){RB.f=d.rbf;renderBook()}else if(d.rbt){RB.tag=RB.tag===d.rbt?null:d.rbt;renderBook()}else if(d.rbo){RB.open=RB.open===d.rbo?null:d.rbo;renderBook()}
 else if(d.rbadd){const day=+$('#rbD').value,slot=$('#rbS').value,order=Object.keys(SLOTCAT);PLAN[day].push({s:slot,r:d.rbadd});PLAN[day].sort((a,c)=>order.indexOf(a.s)-order.indexOf(c.s));savePlan();toast('Ajouté : '+JOURS[day]+' · '+slot);RB.open=null;renderBook()}});
+/* ---------- MON FRIGO ---------- */
+const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ');
+const FG=[
+['Protéines',[['poulet','Poulet',/poulet/],['dinde','Dinde',/dinde/],['boeuf','Bœuf haché / steak',/boeuf hache|steak hache/],['boeuf2','Bœuf à griller',/rumsteck|boeuf a griller|boeuf a braiser/],['porc','Porc',/porc/],['oeufs','Œufs',/^oeufs?$|blancs d oeufs/],['jambon','Jambon',/jambon/],['tofu','Tofu',/tofu/],['pchiches','Pois chiches',/pois chiches/],['lentilles','Lentilles',/lentilles/],['hrouges','Haricots rouges',/haricots rouges/]]],
+['Laitages',[['skyr','Skyr',/skyr/],['fblanc','Fromage blanc',/fromage blanc/],['ygrec','Yaourt grec',/yaourt grec/],['cottage','Cottage cheese',/cottage/],['feta','Feta',/feta/],['mozza','Mozzarella',/mozzarella/],['parmesan','Parmesan',/parmesan/],['emmental','Emmental',/emmental/],['lait','Lait',/^lait /]]],
+['Féculents',[['riz','Riz',/^riz/],['pates','Pâtes',/pates|spaghetti|tagliatelles|lasagne/],['semoule','Semoule',/semoule/],['quinoa','Quinoa',/quinoa/],['boulgour','Boulgour',/boulgour/],['pdt','Pommes de terre',/pommes de terre/],['pdouce','Patate douce',/patate douce/],['pain','Pain',/^pain|pains pita/],['tortillas','Tortillas',/tortillas/],['avoine','Flocons d\'avoine',/avoine/],['nouilles','Nouilles / vermicelles',/nouilles|vermicelles/]]],
+['Légumes',[['courgette','Courgette',/courgette/],['poivron','Poivron',/poivron/],['tomate','Tomates',/^tomates?( cerises)?$/],['tconc','Tomates en boîte',/tomates concassees/],['oignon','Oignon',/oignon|echalote/],['carotte','Carottes',/carotte/],['brocoli','Brocoli',/brocoli/],['epinards','Épinards',/epinards/],['champi','Champignons',/champignons/],['hverts','Haricots verts',/haricots verts/],['concombre','Concombre',/concombre/],['salade','Salade',/salade/],['poireau','Poireau',/poireau/],['butternut','Butternut',/butternut/],['ppois','Petits pois',/petits pois/],['mais','Maïs',/mais/],['avocat','Avocat',/avocat/]]],
+['Fruits',[['banane','Bananes',/banane/],['pomme','Pommes',/^pommes?$/],['frouges','Fruits rouges',/fruits rouges/],['citron','Citron',/citron/]]]];
+const FMAP={};FG.forEach(([,l])=>l.forEach(([id,lab,re])=>FMAP[id]={lab,re}));
+let FR=lsGet('frigo')||{sel:[],extra:''};let FSEED=0;
+const NUT={poulet:['poulet',150,'g',165,35],dinde:['dinde',150,'g',165,35],boeuf:['bœuf haché 5 %',150,'g',188,32],boeuf2:['bœuf',140,'g',182,31],porc:['filet mignon de porc',150,'g',180,33],oeufs:['œufs',3,'',225,20],jambon:['jambon',3,'tranches',135,24],tofu:['tofu',150,'g',210,21],pchiches:['pois chiches',150,'g',210,12],lentilles:['lentilles',60,'g crues',200,14],hrouges:['haricots rouges',200,'g',220,16],
+riz:['riz',60,'g cru',210,4],pates:['pâtes',70,'g crues',245,9],semoule:['semoule',60,'g',216,7],quinoa:['quinoa',60,'g',220,8],boulgour:['boulgour',60,'g',210,7],pdt:['pommes de terre',200,'g',160,4],pdouce:['patate douce',200,'g',172,3],pain:['pain complet',2,'tranches',200,8],tortillas:['tortillas',2,'',340,10],nouilles:['nouilles',60,'g',210,7]};
+const PROT=['poulet','dinde','boeuf','boeuf2','porc','oeufs','jambon','tofu','pchiches','lentilles','hrouges'],STARCH=['riz','pates','semoule','quinoa','boulgour','pdt','pdouce','pain','tortillas','nouilles'],VEG=['courgette','poivron','tomate','oignon','carotte','brocoli','epinards','champi','hverts','poireau','butternut','ppois','mais','concombre','salade','avocat'];
+const CHEESE={feta:['feta',30,81,4.5],mozza:['mozzarella',40,66,7],parmesan:['parmesan',10,40,3],emmental:['emmental',15,57,4]};
+const vlab=id=>FMAP[id].lab.toLowerCase();
+const de=x=>/^[aeiouyœéh]/i.test(x)?"d'"+x:'de '+x;
+const TPL=[
+{k:'wok',st:['riz','nouilles','quinoa',null],veg:['poivron','carotte','brocoli','courgette','champi','oignon','epinards','ppois','hverts','poireau'],n:(p,v)=>`Wok ${de(p)}, ${v}, sauce soja-gingembre`,
+ steps:(p,s,v)=>[s?`Cuis ${s} selon le paquet.`:null,`Saisis ${p} 5 à 6 minutes à feu vif avec 1 c. à café d'huile.`,`Ajoute ${v} coupés fins, 5 minutes : ils doivent rester croquants.`,`Ajoute 2 c. à soupe de sauce soja, du gingembre râpé et de l'ail, mélange 1 minute${s?' avec '+s:''}.`]},
+{k:'plaque',st:['pdt','pdouce'],veg:['courgette','poivron','brocoli','carotte','oignon','champi','butternut','tomate'],n:(p,v,s)=>`Plaque au four au paprika : ${p}, ${s}, ${v}`,
+ steps:(p,s,v)=>[`Préchauffe le four à 210 °C.`,`Coupe ${s} en cubes, mélange avec 1 c. à café d'huile, paprika et sel : 10 minutes au four.`,`Ajoute ${p} en morceaux et ${v}, assaisonne.`,`Remets 15 à 18 minutes au four.`]},
+{k:'curry',st:['riz','semoule','quinoa',null],veg:['epinards','courgette','carotte','poivron','brocoli','tomate','oignon','ppois','butternut','champi'],n:(p,v)=>`Curry ${de(p)}, ${v}`,
+ steps:(p,s,v)=>[`Fais revenir un oignon (si tu en as) avec 2 c. à café de curry et un fond d'eau.`,`Ajoute ${p}, 5 minutes, puis ${v}.`,`Ajoute 3 c. à soupe de yaourt grec ou de lait de coco allégé et 100 ml d'eau, mijote 10 minutes.`,s?`Sers avec ${s}.`:`Sers tel quel, c'est déjà complet.`]},
+{k:'tomate',st:['pates','riz','semoule',null],veg:['courgette','poivron','champi','epinards','oignon','carotte','tomate','tconc'],n:(p,v)=>`Poêlée ${de(p)} à la tomate et aux herbes, ${v}`,
+ steps:(p,s,v)=>[`Fais revenir ${p} 5 minutes avec de l'ail.`,`Ajoute ${v} et 200 g de tomates (fraîches ou en boîte), origan ou herbes de Provence, sel, poivre.`,`Mijote 15 minutes.`,s?`Sers avec ${s}.`:`Sers avec une salade.`]},
+{k:'bowl',st:['quinoa','boulgour','riz','semoule'],veg:['concombre','tomate','avocat','salade','carotte','mais','poivron','epinards'],n:(p,v,s)=>`Bowl ${p}-${s}, ${v}, sauce yaourt-citron`,
+ steps:(p,s,v)=>[`Cuis ${s} et laisse tiédir.`,`Grille ${p} assaisonné 8 minutes (ou réchauffe-le s'il est déjà cuit).`,`Coupe ${v}.`,`Sauce : 3 c. à soupe de yaourt grec, citron, sel, poivre. Assemble le bowl. Parfait à emporter.`]},
+{k:'wrap',st:['tortillas','pain'],veg:['salade','tomate','poivron','concombre','oignon','avocat','mais','champi'],n:(p,v)=>`Wraps ${p}, ${v}`,
+ steps:(p,s,v)=>[`Fais revenir ${p} avec paprika et cumin, 6 minutes.`,`Prépare ${v}.`,`Chauffe ${s} 20 secondes par face.`,`Garnis, ajoute une cuillère de yaourt grec ou de salsa, roule.`]},
+{k:'omelette',prot:['oeufs'],st:['pdt','pain',null],veg:['champi','epinards','poivron','oignon','tomate','courgette','poireau','ppois'],n:(p,v)=>`Omelette garnie : ${v}`,
+ steps:(p,s,v)=>[s==='pommes de terre'?`Cuis les pommes de terre en rondelles 10 minutes à l'eau.`:null,`Fais revenir ${v} 5 minutes avec 1 c. à café d'huile.`,`Verse 3 œufs battus avec sel et poivre, cuis 3 à 4 minutes à feu doux.`,`Plie et sers${s&&s!=='pommes de terre'?' avec '+s:''}.`]}];
+function haveSet(){const ex=norm(FR.extra).split(/ *[, ] */).filter(w=>w.length>2);return{ids:new Set(FR.sel),ex}}
+function matchIng(name,H){const n=norm(name).trim();for(const id of H.ids){if(FMAP[id]&&FMAP[id].re.test(n))return true}return H.ex.some(w=>n.includes(w))}
+function rank(){const H=haveSet();return recs().filter(r=>r.c!=='libre').map(r=>{const need=r.ing.map(ingParse).filter(g=>g.ray!=='Placard'&&g.q>0);const have=need.filter(g=>matchIng(g.name,H)),miss=need.filter(g=>!matchIng(g.name,H));return{r,have,miss,need}}).filter(x=>x.have.length&&x.miss.length<=3).sort((a,b)=>a.miss.length-b.miss.length||b.have.length-a.have.length).slice(0,10)}
+function idea(){const sel=FR.sel;const P=PROT.filter(x=>sel.includes(x)),S=STARCH.filter(x=>sel.includes(x)),Vs=VEG.filter(x=>sel.includes(x));if(!P.length)return null;
+let rnd=FSEED*9301+49297;const R=n=>{rnd=(rnd*9301+49297)%233280;return Math.floor(rnd/233280*n)};
+const p=P[R(P.length)];const ok=TPL.filter(t=>(p==='oeufs'?t.k==='omelette':!t.prot||t.prot.includes(p))&&(t.st.includes(null)||S.some(s=>t.st.includes(s))));if(!ok.length)return null;const t=ok[R(ok.length)];
+const sC=S.filter(s=>t.st.includes(s));const s=sC.length?sC[R(sC.length)]:null;let vC=Vs.filter(v=>t.veg.includes(v));if(!vC.length)vC=Vs.slice();const v=[];while(vC.length&&v.length<2){v.push(vC.splice(R(vC.length),1)[0])}
+const ch=Object.keys(CHEESE).filter(c=>sel.includes(c));const c=ch.length&&['bowl','wrap','omelette','tomate','plaque'].includes(t.k)?ch[R(ch.length)]:null;
+let k=0,pr=0;const ing=[];const np=NUT[p];k+=np[3];pr+=np[4];ing.push(`${np[0]} : ${np[1]} ${np[2]}`.replace(' : 3 ',' : 3').trim());
+if(s){const ns=NUT[s];k+=ns[3];pr+=ns[4];ing.push(`${ns[0]} : ${ns[1]} ${ns[2]}`)}
+v.forEach(x=>{if(x==='avocat'){k+=60;ing.push('avocat : ¼')}else{k+=45;pr+=2;ing.push(vlab(x)+' : 150 g environ')}});
+if(c){const cc=CHEESE[c];k+=cc[2];pr+=cc[3];ing.push(`${cc[0]} : ${cc[1]} g`)}
+if(t.k!=='bowl'){k+=45;ing.push('huile : 1 c. à café')}if(['curry','bowl'].includes(t.k)){k+=17;pr+=3;ing.push('yaourt grec : 3 c. à soupe')}
+const pn=np[0],sn=s?NUT[s][0]:'',vn=v.length?v.map(vlab).join(' et '):'les légumes que tu as';
+const steps=t.steps(pn,sn,vn).filter(Boolean);if(c)steps.push(`Termine avec ${CHEESE[c][0]} (${CHEESE[c][1]} g).`);
+return{n:t.n(pn,vn,sn),k:Math.round(k/5)*5,p:Math.round(pr),ing,steps,noVeg:!Vs.length}}
+function renderFrigo(){const sel=new Set(FR.sel);const t=totals();
+$('#mFrigo').innerHTML=`<p class="small mut" style="margin:14px 0 6px">Coche ce que tu as sous la main. L'appli te trouve des recettes et invente une idée avec.</p>
+${FG.map(([g,l])=>`<h3 style="margin:14px 0 6px">${g}</h3><div class="fchips">${l.map(([id,lab])=>`<button data-fi="${id}" class="${sel.has(id)?'on':''}">${esc(lab)}</button>`).join('')}</div>`).join('')}
+<label for="fExtra" style="margin-top:12px">Autres aliments (séparés par des virgules)</label><input id="fExtra" value="${esc(FR.extra)}" placeholder="Ex. : chou-fleur, ricotta, aubergine">
+<div class="btns"><button id="fClear">Tout décocher</button></div><div id="fOut"></div>`;renderFOut()}
+function renderFOut(){const out=$('#fOut');if(!out)return;if(!FR.sel.length&&!FR.extra.trim()){out.innerHTML='';return}
+const id=idea();const t=totals();let h='';
+h+=`<h2>Idée express</h2>`;
+if(id){h+=`<div class="card meal"><div class="eyebrow" style="color:var(--brand)">Inventée avec ton frigo</div><h3 style="margin:6px 0 4px">${esc(id.n)}</h3><div class="small"><b>≈ ${fmt(id.k)} kcal</b> · <span style="color:var(--pro)">${id.p} g prot.</span> · il te reste ${fmt(t.left)} kcal aujourd'hui</div>
+<div class="recipe"><h4>Pour toi</h4><ul>${id.ing.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h4>Préparation</h4><ol>${id.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>
+${id.noVeg?'<p class="small" style="color:var(--warn)">Pas de légumes cochés : ajoute au moins une salade ou des légumes surgelés.</p>':''}
+<div class="btns mb"><button data-fnext="1">Une autre idée</button><button data-fsave="1">Garder dans Mes repas</button><button data-fjour="1">Ajouter au journal</button></div></div>`}
+else h+=`<p class="small mut">Coche au moins une protéine (poulet, œufs, tofu…) pour que je t'invente une idée.</p>`;
+const rk=rank();h+=`<h2>Dans ta bibliothèque</h2>`+(rk.length?rk.map(x=>`<div class="card meal" style="padding:12px 14px"><b>${esc(x.r.n)}</b><div class="small mut">${fmt(x.r.k)} kcal · ${x.r.p} g prot.${x.r.t?' · '+x.r.t+' min':''}</div>
+<div class="small" style="margin-top:6px"><span style="color:var(--ok)">Tu as : ${esc(x.have.map(g=>g.name).join(', '))}</span>${x.miss.length?`<br><span style="color:var(--warn)">Il te manque : ${esc(x.miss.map(g=>g.name).join(', '))}</span>`:'<br><b style="color:var(--ok)">Tu as tout !</b>'}</div>
+<div class="btns mb"><button data-fopen="${x.r.id}">Voir la recette</button></div></div>`).join(''):'<p class="small mut">Aucune recette ne colle encore : coche quelques aliments de plus.</p>');
+h+=`<h2>Plus créatif ?</h2><div class="card small">Claude peut t'inventer une recette sur mesure avec ce que tu as et ce qu'il te reste à manger aujourd'hui.<div class="btns"><button class="pri" data-fclaude="1">Copier la demande pour Claude</button><a class="btn" href="https://claude.ai/new" target="_blank" rel="noopener">Ouvrir Claude ↗</a></div><div id="fCl"></div></div>`;
+out.innerHTML=h}
+let FIDEA=null;
+document.addEventListener('click',async e=>{const b=e.target.closest('#mFrigo button');if(!b)return;const d=b.dataset;
+if(d.fi){const i=FR.sel.indexOf(d.fi);i<0?FR.sel.push(d.fi):FR.sel.splice(i,1);b.classList.toggle('on');save('frigo',FR);renderFOut();return}
+if(b.id==='fClear'){FR={sel:[],extra:''};save('frigo',FR);renderFrigo();return}
+if(d.fnext){FSEED++;renderFOut();return}
+if(d.fsave||d.fjour){const id=idea();if(!id)return;if(d.fjour){addItem({name:id.n,kcal:id.k,prot:id.p,detail:'Idée frigo'});toast('Ajouté au journal');return}
+MY.push({id:'my_'+uidGen(),mine:1,c:'repas',n:id.n,k:id.k,p:id.p,t:25,d:'Idée née de ton frigo.',ing:id.ing,st:id.steps});save('myrec',MY);toast('Gardé dans Mes repas');return}
+if(d.fopen){RB={q:'',f:'all',tag:null,open:d.fopen};mTab='recettes';renderMenus();setTimeout(()=>{const el=document.querySelector(`[data-rbo="${d.fopen}"]`);el&&el.scrollIntoView({block:'center'})},50);return}
+if(d.fclaude){const H=haveSet();const list=[...FR.sel.map(i=>FMAP[i].lab),...FR.extra.split(',').map(s=>s.trim()).filter(Boolean)].join(', ');const t=totals();
+const txt=`Tu es mon coach nutrition. J'ai dans mon frigo : ${list}. Il me reste ${fmt(t.left)} kcal et ${fmt(Math.max(0,t.prot-t.pro))} g de protéines à manger aujourd'hui. Je suis un homme de ${P.age} ans, ${P.w} kg, en sèche, je fais de la boxe. Pas de poisson ni de produits de la mer. Propose-moi 2 recettes savoureuses et simples avec surtout ce que j'ai (je peux avoir huile, épices, sauce soja, moutarde, miel). Pour chacune : quantités pour moi, étapes courtes, calories et protéines estimées. Termine par le bloc <data>{"items":[{"name":"…","kcal":0,"kcal_min":0,"kcal_max":0,"protein":0,"sodium_mg":0,"detail":"…"}],"workout":null,"weight":null}</data> avec la recette que tu me conseilles le plus.`;
+try{await navigator.clipboard.writeText(txt);toast('Copié : colle-le dans Claude')}catch(err){$('#fCl').innerHTML=`<textarea rows="5" readonly style="margin-top:8px">${esc(txt)}</textarea>`}}});
+document.addEventListener('input',e=>{if(e.target.id==='fExtra'){FR.extra=e.target.value;save('frigo',FR);clearTimeout(window.__ft);window.__ft=setTimeout(renderFOut,400)}});
+
+document.getElementById('goFrigo').addEventListener('click',()=>{mTab='frigo'});
 /* ---------- navigation ---------- */
 const VIEWS=['accueil','jour','coach','menus','sante','poids','douleur','profil'];
 function route(){const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):'accueil';if(v==='accueil')renderHome();if(v==='menus')renderMenus();document.querySelectorAll('section.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));if(v==='poids')drawW();window.scrollTo(0,0)}

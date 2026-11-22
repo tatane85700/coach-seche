@@ -780,7 +780,7 @@ $('#v-menus').addEventListener('click',e=>{const b=e.target.closest('button');if
 if(d.rbf){RB.f=d.rbf;renderBook()}else if(d.rbt){RB.tag=RB.tag===d.rbt?null:d.rbt;renderBook()}else if(d.rbo){RB.open=RB.open===d.rbo?null:d.rbo;renderBook()}
 else if(d.rbadd){const day=+$('#rbD').value,slot=$('#rbS').value,order=Object.keys(SLOTCAT);PLAN[day].push({s:slot,r:d.rbadd});PLAN[day].sort((a,c)=>order.indexOf(a.s)-order.indexOf(c.s));savePlan();toast('Ajouté : '+JOURS[day]+' · '+slot);RB.open=null;renderBook()}});
 /* ---------- MON FRIGO ---------- */
-const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ');
+const norm=s=>String(s).toLowerCase().replace(/œ/g,'oe').replace(/æ/g,'ae').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9 ]/g,' ');
 const FG=[
 ['Protéines',[['poulet','Poulet',/poulet/],['dinde','Dinde',/dinde/],['boeuf','Bœuf haché / steak',/boeuf hache|steak hache/],['boeuf2','Bœuf à griller',/rumsteck|boeuf a griller|boeuf a braiser/],['porc','Porc',/porc/],['oeufs','Œufs',/^oeufs?$|blancs d oeufs/],['jambon','Jambon',/jambon/],['tofu','Tofu',/tofu/],['pchiches','Pois chiches',/pois chiches/],['lentilles','Lentilles',/lentilles/],['hrouges','Haricots rouges',/haricots rouges/]]],
 ['Laitages',[['skyr','Skyr',/skyr/],['fblanc','Fromage blanc',/fromage blanc/],['ygrec','Yaourt grec',/yaourt grec/],['cottage','Cottage cheese',/cottage/],['feta','Feta',/feta/],['mozza','Mozzarella',/mozzarella/],['parmesan','Parmesan',/parmesan/],['emmental','Emmental',/emmental/],['lait','Lait',/^lait /]]],

@@ -250,6 +250,27 @@ button svg{width:20px;height:20px}
 .noai .ai-only{display:none!important}
 .whWrap .whC{background:radial-gradient(circle,#ffd8b8 0%,#f2a07b 55%,#b5603a 100%)}
 .whs{user-select:none;-webkit-user-select:none}
+/* activités */
+.avt{flex:none;border-radius:50%;background:var(--sand);color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:900;overflow:hidden}.avt img{width:100%;height:100%;object-fit:cover}
+.act{padding:16px 0 0;overflow:hidden;cursor:pointer;margin:12px 0}.act>*:not(.feedMap){margin-left:18px;margin-right:18px}
+.actH{display:flex;gap:12px;align-items:center}.actH b{font-size:16px}
+.actPl{display:flex;align-items:center;gap:5px}.actPl svg{width:16px;height:16px}
+.actT{font-size:22px;font-weight:900;margin:14px 0 10px;line-height:1.2}
+.actS{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px}.actS>div{display:flex;flex-direction:column;gap:2px;min-width:0}.actS b{font-size:17px;font-weight:900;white-space:nowrap}
+.meds{display:flex;gap:2px;align-items:center}
+.achB{display:flex;gap:12px;align-items:center;background:var(--field);border-radius:18px;padding:12px 14px;margin-bottom:12px}.achB b{font-size:15px}
+.dlt{display:inline-block;font-size:13px;font-weight:800;border-radius:8px;padding:2px 8px;background:var(--line);color:var(--mut)}.dlt.up{background:var(--sage);color:var(--pro)}
+.feedMap{height:210px;background:var(--sky);position:relative;z-index:0}.feedMap>svg{width:100%;height:100%;margin:0;border:0;border-radius:0;max-height:none;background:none}
+.feedMap .leaflet-control-attribution{font-size:9px!important}
+.actF{display:flex;gap:16px;padding:12px 0 14px}.actF span{display:flex;align-items:center;gap:5px}.actF svg{width:16px;height:16px}
+.wstrip{display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr));gap:3px;align-items:end;margin:6px 0 12px}
+.wsL{display:flex;flex-direction:column;align-items:center}.wsL .small{font-size:11px}.flame{display:flex;align-items:center;gap:2px;color:var(--brand)}.flame svg{width:22px;height:22px}.flame b{font-size:20px;font-weight:900}
+.wsD{display:flex;flex-direction:column;align-items:center;gap:4px}.wsC{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+.wsC.on{background:var(--brand);border-color:var(--brand);color:var(--onpri)}.wsC.td{border:2.5px solid var(--ink)}.wsC.on.td{border-color:var(--ink)}
+.actTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.actTop b{font-size:17px}
+.actG{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;margin:12px 0}.actG>div{display:flex;flex-direction:column;gap:2px}.actG b{font-size:20px;font-weight:900}
+.splits{margin:6px 0 10px}.spH,.spR{display:grid;grid-template-columns:42px 62px 1fr 40px;gap:8px;align-items:center;padding:5px 0}.spR{border-bottom:1px solid var(--line)}
+.spBar{height:14px;border-radius:99px;background:transparent}.spBar i{display:block;height:100%;border-radius:99px}
 </style>
 </head>
 <body>
@@ -435,6 +456,7 @@ button svg{width:20px;height:20px}
   <div class="hero" data-art="sport"></div>
   <div class="card" id="wkBox"></div>
   <div class="card" id="runBox"></div>
+  <div id="runFeed"></div>
   <div class="card" id="spNext"></div>
   <div class="card"><div class="cardHead"><span class="eyebrow">Échauffement et retour au calme</span></div>
     <p class="small" style="margin:0 0 4px"><b>Avant la boxe ou la muscu</b> : 10 mouvements guidés, 6 minutes, avec une attention aux poignets, coudes et épaules.</p>
@@ -512,7 +534,7 @@ button svg{width:20px;height:20px}
     <div class="btns"><button class="pri" id="exp">Exporter mes données</button><label class="btn" for="impF">Importer un fichier</label><input type="file" id="impF" accept="application/json,.json,text/plain" hidden></div>
     <details style="margin-top:8px"><summary>Coller des données</summary><textarea id="impT" rows="4" placeholder="Colle ici les données copiées depuis l'ancienne appli"></textarea><div class="btns"><button id="impB">Importer</button></div></details>
   </div>
-  <p class="mut small" style="margin-top:18px"><b>Version du 23/11 · 11 h 15</b> (nouveau look, semaine sportive et 23 sports, parcours GPS sur carte, photos des recettes). Si tu ne vois pas les dernières nouveautés : ferme complètement l'appli et rouvre-la.</p>
+  <p class="mut small" style="margin-top:18px"><b>Version du 23/11 · 14 h 30</b> (nouveau look, semaine sportive et 23 sports, parcours GPS sur carte, photos des recettes). Si tu ne vois pas les dernières nouveautés : ferme complètement l'appli et rouvre-la.</p>
   <p class="mut small" style="margin-top:18px">Aliments : table Ciqual de l'Anses (licence ouverte). Codes-barres : Open Food Facts (ODbL), lecture avec html5-qrcode (Apache 2.0). Photos : Anna Pelzer, Svitlana, Ella Olsson, Julia, Vadim Matei et Vitaly Gariev, sur Unsplash (licence Unsplash, utilisation libre). Cartes : © les contributeurs OpenStreetMap (ODbL), affichées avec Leaflet (BSD-2).</p>
   <details class="small mut"><summary>Photographes des recettes (Unsplash)</summary><p style="margin:4px 0 0">Alex Bayev, Alisha Hieb, Andreas Rasmussen, Anh Nguyen, Annemarie Grudën, Anshu A, Artur Kornakov, Ati Nabaut, bady abbas, Bakd&amp;Raw by Karolin Baitinger, Ben Kolde, Brooke Lark, Cala, Caleb Wright, Carlos Fernández, Christopher Alvarenga, Cisco Lin, Cliffer Rebelo, Cosmin Ursea, Daniel Brubaker, David Marquez, David Trinks, Deryn Macey, Diego Arenas de Rodrigo, Doug Bagg, Elena Leya, Ella Olsson, Emanuel Ekström, Esra Afşar, Fernando Andrade, Focused on You, Gabriel Yuji, Giorgio Trovato, HamZa NOUASRIA, Harry Dona, Homescreenify, HYEWON HWANG, Imad 786, Jana Ohajdova, Jason Leung, Jenn Kosar, Jonathan Borba, Jonathan Pielmayer, Jordon Kaplan, Joseph Gonzalez, Julian Rojas Dättwyler, Kaffee Meister, Karolina Kołodziejczak, Leanna Myers, Lena Sifoo, Louis Hansel, Maddi Bazzocco, Mads Eneqvist, Mark König, Markus Winkler, Max Griss, Monaz Hastam, Monika Grabkowska, Mourad HARKAT, Mustafa Bashari, Natalia Gusakova, Natalia Y., Nathan Dumlao, Nick Nice, nikldn, Pablo Arroyo, Rachel Loughman, Rafael Maggion, Riddhi K, Rimsha Noor, Roman Shalkevic, Sara Cervera, sera, sheri silver, Sumit Bhatia, Svitlana, Tania Melnyczuk, The Fry Family Food Co., Thembi Johnson, Towfiqu barbhuiya, VD Photography, Weronika Krztoń, william wallace, X F, Yimeng Zhao, Zoshua Colah.</p></details>
 </section>
@@ -1303,7 +1325,7 @@ say('Recherche du signal GPS.');wake(true);$('#runSheet').innerHTML='';$('#runSh
 RUN.watch=navigator.geolocation.watchPosition(onPos,err=>{RUN&&(RUN.err=err.code===1?'Autorise la localisation pour Safari : Réglages > Confidentialité > Service de localisation.':'Signal GPS faible, reste à découvert.');drawRun()},{enableHighAccuracy:true,maximumAge:0,timeout:20000});
 RUN.iv=setInterval(drawRun,1000);drawRun()}
 function onPos(p){if(!RUN||RUN.paused)return;const c=p.coords;RUN.err=null;RUN.acc_m=Math.round(c.accuracy);if(c.accuracy>35){drawRun();return}
-const pt={la:c.latitude,lo:c.longitude,t:p.timestamp};if(!RUN.gpsOk){RUN.gpsOk=true;say('Signal GPS trouvé. C\'est parti !');beep(880)}
+const pt={la:c.latitude,lo:c.longitude,t:p.timestamp,e:runElapsed(),a:c.altitude!=null&&(c.altitudeAccuracy==null||c.altitudeAccuracy<40)?c.altitude:null};if(!RUN.gpsOk){RUN.gpsOk=true;say('Signal GPS trouvé. C\'est parti !');beep(880)}
 const last=RUN.resetNext?null:RUN.pts[RUN.pts.length-1];RUN.resetNext=false;if(last){const d=hav(last,pt),dt=Math.max(1,(pt.t-last.t)/1000);if(d<3)return;if(d/dt>GM[RUN.mode].max*1.3)return;RUN.dist+=d}
 RUN.pts.push(pt);const km=Math.floor(RUN.dist/1000);if(km>RUN.lastKm){const el=runElapsed();const sp=el-RUN.lastSplitT;RUN.splits.push(sp);RUN.lastSplitT=el;RUN.lastKm=km;
 say(`${km} kilomètre${km>1?'s':''}. Temps ${spoken(el)}. ${RUN.mode==='velo'?'Vitesse moyenne '+Math.round(RUN.dist/1000/(el/3600))+' kilomètres heure':'Dernier kilomètre en '+spoken(sp)}.`);beep(990,.25)}}
@@ -1333,27 +1355,107 @@ else if(a==='end'){if(!RUN.armed){RUN.armed=true;b.textContent='Confirmer la fin
 document.addEventListener('visibilitychange',()=>{if(!RUN)return;if(document.hidden)RUN.hiddenAt=Date.now();else{if(RUN.hiddenAt&&Date.now()-RUN.hiddenAt>15000)toast('Le GPS a pu être coupé pendant que l\'appli était fermée : la distance est estimée en ligne droite.');RUN.hiddenAt=null;wake(true)}});
 function endRun(){const r=RUN;navigator.geolocation.clearWatch(r.watch);clearInterval(r.iv);if(r.M)r.M.remove();wake(false);const el=runElapsed(),km=r.dist/1000;RUN=null;
 if(km<0.05){$('#runSheet').hidden=true;toast('Sortie trop courte, non enregistrée');return}
-const kcal=runKcal(r.mode,km,el);const step=Math.max(1,Math.ceil(r.pts.length/300));const pts=r.pts.filter((p,i)=>i%step===0||i===r.pts.length-1).map(p=>({la:+p.la.toFixed(5),lo:+p.lo.toFixed(5)}));
-const H=lsGet('runs')||[];const run={d:today,mode:r.mode,km:+km.toFixed(2),sec:Math.round(el),kcal,splits:r.splits.map(Math.round),pts};H.push(run);if(H.length>100)H.splice(0,H.length-100);save('runs',H);
+const kcal=runKcal(r.mode,km,el);const step=Math.max(1,Math.ceil(r.pts.length/300));const pts=r.pts.filter((p,i)=>i%step===0||i===r.pts.length-1).map(p=>{const o={la:+p.la.toFixed(5),lo:+p.lo.toFixed(5),e:Math.round(p.e)};if(p.a!=null)o.a=Math.round(p.a);return o});
+const H=lsGet('runs')||[];const run={d:today,ts:r.t0,mode:r.mode,km:+km.toFixed(2),sec:Math.round(el),kcal,splits:r.splits.map(Math.round),pts};{const st=runStats({...run});run.mov=st.mov;if(st.gain!=null){run.gain=st.gain;run.amax=st.amax}}H.push(run);if(H.length>100)H.splice(0,H.length-100);save('runs',H);
 D.workouts.push({name:GM[r.mode].lab+' '+km.toFixed(1).replace('.',',')+' km',active:kcal});save('d-'+today,D);renderToday();
-say(`Bravo ! ${km.toFixed(2).replace('.',' virgule ')} kilomètres en ${spoken(el)}.`);showRun(run)}
-function showRun(run){$('#runSheet').hidden=false;const best=run.splits.length?Math.min(...run.splits):null;
-$('#runSheet').innerHTML=`<div class="sheetIn"><div class="cardHead"><h2 style="margin:0">${GM[run.mode].lab} du ${frDate(run.d)}</h2><button class="x" data-rclose="1" aria-label="Fermer">×</button></div>
-<div class="runGrid"><div><div class="rv">${String(run.km).replace('.',',')}</div><div class="small mut">km</div></div><div><div class="rv">${mmss(run.sec)}</div><div class="small mut">durée</div></div><div><div class="rv">${run.mode==='velo'?(run.km/(run.sec/3600)).toFixed(1).replace('.',','):paceTxt(run.sec,run.km).replace(' /km','')}</div><div class="small mut">${run.mode==='velo'?'km/h':'allure /km'}</div></div></div>
-<div class="map" id="histMap"></div>
-<p><b>${run.kcal} kcal actives</b> ajoutées à ton journal : tu peux en remanger la moitié (${Math.round(run.kcal/2)} kcal).</p>
-${run.splits.length?`<h3>Temps par kilomètre</h3>${run.splits.map((s,i)=>`<div class="row small"><div class="grow">Km ${i+1}</div><b style="color:${s===best?'var(--ok)':'inherit'}">${mmss(s)}</b></div>`).join('')}`:''}
-<div class="btns"><button class="pri" data-rclose="1">Fermer</button></div></div>`;
-mapIn($('#histMap'),run.pts||[]).then(M=>{HM=M});
-$('#runSheet').onclick=e=>{if(e.target.closest('[data-rclose]')){if(HM){HM.remove();HM=null}$('#runSheet').hidden=true;$('#runSheet').onclick=null;renderRuns()}}}
-function renderRuns(){const box=document.getElementById('runBox');if(!box)return;const H=lsGet('runs')||[];const wk=H.filter(r=>(new Date(today)-new Date(r.d))/864e5<7);const kmw=wk.reduce((a,r)=>a+r.km,0);
-const bestRun=H.filter(r=>r.mode==='course'&&r.km>=1).sort((a,b)=>a.sec/a.km-b.sec/b.km)[0];
-box.innerHTML=`<div class="cardHead"><span class="eyebrow">Course, marche, vélo · GPS</span><span class="small mut">${kmw?kmw.toFixed(1).replace('.',',')+' km cette semaine':''}</span></div>
-<div class="btns" style="margin-top:0"><button class="pri" data-gps="course">${ic('course')}Courir</button><button data-gps="marche">${ic('marche')}Marcher</button><button data-gps="velo">${ic('velo')}Vélo</button><button data-gps="rando">${ic('rando')}Rando</button></div>
-<p class="small mut" style="margin:8px 0">Temps, distance, allure, tracé et annonce vocale à chaque kilomètre. Garde l'appli ouverte et utilise « Verrouiller l'écran » dans ta poche. Tu as une montre (Apple Watch, Strava) ? Elle reste plus précise : note juste ses calories actives dans « Jour ».</p>
-${bestRun?`<p class="small" style="margin:0 0 6px">Meilleure allure en course : <b>${paceTxt(bestRun.sec,bestRun.km)}</b> (${String(bestRun.km).replace('.',',')} km le ${frDate(bestRun.d)})</p>`:''}
-${H.length?'':emptyState('map','Aucune sortie pour l\'instant','Lance une sortie : ton parcours s\'affichera sur une vraie carte.')}${H.slice(-5).reverse().map((r,i)=>`<div class="row"><span class="routeT">${r.pts&&r.pts.length>1?routeSvg(r.pts,64,48):''}</span><div class="grow"><b>${GM[r.mode].lab} · ${String(r.km).replace('.',',')} km</b><div class="small mut">${frDate(r.d)} · ${mmss(r.sec)} · ${r.mode==='velo'?(r.km/(r.sec/3600)).toFixed(1).replace('.',',')+' km/h':paceTxt(r.sec,r.km)} · ${r.kcal} kcal</div></div><button data-rshow="${H.length-1-i}">Voir</button></div>`).join('')}`}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-gps],[data-rshow]');if(!b)return;if(b.dataset.gps)startRun(b.dataset.gps);else{const H=lsGet('runs')||[];showRun(H[+b.dataset.rshow])}});
+say(`Bravo ! ${km.toFixed(2).replace('.',' virgule ')} kilomètres en ${spoken(el)}.`);geoPlace(run);showRun(run)}
+/* ---------- ACTIVITÉS GPS : fil façon « réseau sportif » + fiche détaillée ---------- */
+const MODEN={course:'Course à pied',marche:'Marche',velo:'Sortie à vélo',rando:'Randonnée'};
+const EFF=[[1,'1 km'],[5,'5 km'],[10,'10 km'],[21.0975,'semi-marathon']];
+const MED=['#e2a93b','#a3adb5','#c07a4b'];
+function runTitle(r){if(r.title)return r.title;const base=MODEN[r.mode]||'Sortie';if(!r.ts)return base;const h=new Date(r.ts).getHours();return base+' '+(h<5?'nocturne':h<11?'matinale':h<14?'du midi':h<18?'dans l\'après-midi':h<22?'du soir':'nocturne')}
+function whenTxt(r){const hm=r.ts?new Date(r.ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'';const dd=new Date(r.d+'T12:00');const diff=Math.round((new Date(today+'T12:00')-dd)/864e5);
+const day=diff===0?'Aujourd\'hui':diff===1?'Hier':dd.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}).replace(/^./,c=>c.toUpperCase());return day+(hm?' à '+hm:'')}
+function runStats(r){if(r._s)return r._s;const P=r.pts||[];const cd=[0];for(let i=1;i<P.length;i++)cd.push(cd[i-1]+hav(P[i-1],P[i]));const hasE=P.length>1&&P.every(p=>p.e!=null);
+let mov=r.mov;if(mov==null){if(hasE){mov=0;for(let i=1;i<P.length;i++){const dt=P[i].e-P[i-1].e,d=cd[i]-cd[i-1];if(dt>0&&dt<90&&d/dt>0.5)mov+=dt}if(mov<r.sec*0.5)mov=r.sec}else mov=r.sec}
+let gain=r.gain,amax=r.amax;if(gain==null){const A=P.map(p=>p.a).filter(a=>a!=null);if(A.length>4){const sm=A.map((a,i)=>{const w=A.slice(Math.max(0,i-2),i+3);return w.reduce((x,y)=>x+y,0)/w.length});gain=0;let ref=sm[0];for(const a of sm){if(a-ref>=2){gain+=a-ref;ref=a}else if(ref-a>=2)ref=a}gain=Math.round(gain);amax=Math.round(Math.max(...A))}}
+r._s={cd,mov:Math.round(mov),gain,amax,hasE};return r._s}
+function bestEff(r,km){if(r.mode!=='course'||r.km<km*0.98)return null;const s=runStats(r),P=r.pts||[],T=km*1000;
+if(s.hasE&&s.cd[s.cd.length-1]>=T){let j=1,b=Infinity;for(let i=0;i<P.length;i++){if(j<=i)j=i+1;while(j<P.length&&s.cd[j]-s.cd[i]<T)j++;if(j>=P.length)break;const seg=(s.cd[j]-s.cd[j-1])||1,over=s.cd[j]-s.cd[i]-T;const tEnd=P[j].e-(P[j].e-P[j-1].e)*(over/seg);b=Math.min(b,tEnd-P[i].e)}if(b<Infinity&&b>0)return Math.round(b)}
+const S=r.splits||[],k=Math.round(km);if(Math.abs(km-k)>0.01||S.length<k)return null;let b=Infinity;for(let i=0;i+k<=S.length;i++)b=Math.min(b,S.slice(i,i+k).reduce((a,c)=>a+c,0));return b<Infinity?b:null}
+function achievements(H,idx){const r=H[idx];if(!r||r.mode!=='course')return[];const out=[];EFF.forEach(([km,lab])=>{const v=bestEff(r,km);if(v==null)return;const prev=H.slice(0,idx).map(x=>bestEff(x,km)).filter(x=>x!=null);const rank=1+prev.filter(x=>x<v).length;if(rank<=3)out.push({km,lab,v,rank,rec:prev.length?Math.min(...prev):null,first:!prev.length})});return out}
+function medal(rank,sz=26){const c=MED[rank-1]||MED[2];return `<svg width="${sz}" height="${sz}" viewBox="0 0 26 26" aria-hidden="true"><path d="M7 1h4l3 8h-4zM19 1h-4l-3 8h4z" fill="${c}" opacity=".75"/><circle cx="13" cy="16" r="8.5" fill="${c}"/><circle cx="13" cy="16" r="6" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2"/><text x="13" y="19.6" text-anchor="middle" font-size="10" font-weight="900" fill="#fff" font-family="Nunito, system-ui, sans-serif">${rank}</text></svg>`}
+function achTxt(a){return a.rank===1?(a.first?`Premier temps sur ${a.lab} !`:`Nouveau record sur ${a.lab} !`):`Ton ${a.rank===2?'2e':'3e'} meilleur temps sur ${a.lab} !`}
+function achDelta(a){if(a.rank===1&&a.rec)return `<span class="dlt up">▼ ${mmss(a.rec-a.v)}</span>`;if(a.rank>1&&a.rec)return `<span class="dlt">à ${mmss(a.v-a.rec)} du record</span>`;return ''}
+const paceOf=(sec,km)=>km>0?sec/km:0;
+const spdTxt=(sec,km)=>(km/(sec/3600)).toFixed(1).replace('.',',');
+const kmTxt=km=>(+km).toFixed(2).replace('.',',');
+function durTxt(s){s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h?`${h}h ${String(m).padStart(2,'0')}min`:`${m}min ${String(x).padStart(2,'0')}s`}
+function avatar(sz=44){const n=(P.name||'').trim();return `<span class="avt" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.4)}px">${n?esc(n[0].toUpperCase()):'<img src="icon-192.png" alt="">'}</span>`}
+/* lieu : géocodage inverse OpenStreetMap (une fois par sortie) */
+let GEOQ=Promise.resolve();
+function geoPlace(r){if(r.place!==undefined||!r.pts||!r.pts.length)return;r.place=null;const p=r.pts[0];GEOQ=GEOQ.then(()=>fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=12&accept-language=fr&lat=${p.la}&lon=${p.lo}`).then(x=>x.ok?x.json():null).then(j=>{if(!j||!j.address)return;const a=j.address;const town=a.city||a.town||a.village||a.municipality||a.suburb||'';const reg=a.county||a.state||'';const pl=[town,reg].filter(Boolean).join(', ');if(!pl)return;const H=lsGet('runs')||[];const k=H.findIndex(x=>(x.ts&&x.ts===r.ts)||(x.d===r.d&&x.sec===r.sec&&x.km===r.km));if(k>=0){H[k].place=pl;save('runs',H)}document.querySelectorAll(`[data-place="${r.ts||r.d+r.sec}"]`).forEach(e=>e.textContent=pl)}).catch(()=>{}).then(()=>new Promise(res=>setTimeout(res,1100))))}
+/* semaine d'activité */
+function actDays(){const H=lsGet('runs')||[];const set=new Set(H.map(r=>r.d));return d=>{if(set.has(d))return true;const x=lsGet('d-'+d);return !!(x&&x.workouts&&x.workouts.length)}}
+function weekStrip(){const has=actDays();const t=new Date(today+'T12:00'),dow=(t.getDay()+6)%7;const mon=new Date(t);mon.setDate(t.getDate()-dow);
+const days=[...Array(7)].map((_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d});let streak=0;for(let w=0;w<52;w++){let any=false;for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()-7*w+i);if(d>t)continue;if(has(d.toISOString().slice(0,10))){any=true;break}}if(any)streak++;else if(w>0)break}
+return `<div class="wstrip"><div class="wsL"><span class="flame">${ic('flame')}<b>${streak}</b></span><span class="small mut">semaine${streak>1?'s':''}</span></div>${days.map((d,i)=>{const k=d.toISOString().slice(0,10);const on=has(k),td=k===today;return `<div class="wsD"><span class="small mut">${'LMMJVSD'[i]}</span><span class="wsC ${on?'on':''} ${td?'td':''}">${d.getDate()}</span></div>`}).join('')}</div>`}
+/* fil */
+let FEEDN=6,FM=[],FIO=null;
+function renderRuns(){const box=document.getElementById('runBox');if(!box)return;const H=lsGet('runs')||[];FM.forEach(m=>m&&m.remove());FM=[];if(FIO)FIO.disconnect();
+const wk=H.filter(r=>(new Date(today)-new Date(r.d))/864e5<7);const kmw=wk.reduce((a,r)=>a+r.km,0);
+const list=H.map((r,i)=>[r,i]).reverse().slice(0,FEEDN);
+box.innerHTML=`<div class="cardHead"><span class="eyebrow">Mes activités</span><span class="small mut">${kmw?kmw.toFixed(1).replace('.',',')+' km cette semaine':''}</span></div>
+${weekStrip()}
+<div class="btns" style="margin-top:4px"><button class="pri" data-gps="course">${ic('course')}Courir</button><button data-gps="marche">${ic('marche')}Marcher</button><button data-gps="velo">${ic('velo')}Vélo</button><button data-gps="rando">${ic('rando')}Rando</button></div>
+<p class="small mut" style="margin:8px 0 0">Temps, distance, allure, dénivelé, records et annonce vocale à chaque kilomètre. Garde l'appli ouverte et utilise « Verrouiller l'écran » dans ta poche.</p>`;
+const feed=document.getElementById('runFeed');feed.innerHTML=H.length?list.map(([r,i])=>actCard(r,i,H)).join('')+(H.length>FEEDN?`<div class="btns" style="justify-content:center"><button data-feedmore="1">Voir plus d'activités</button></div>`:''):`<div class="card">${emptyState('map','Aucune activité pour l\'instant','Lance une course, une marche ou une sortie vélo : elle apparaîtra ici avec ta carte et tes records.')}</div>`;
+FIO=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;const el=en.target;FIO.unobserve(el);const r=H[+el.dataset.ri];if(r)mapIn(el,r.pts||[],false,true).then(m=>FM.push(m))}),{rootMargin:'200px'});
+feed.querySelectorAll('.feedMap').forEach(el=>FIO.observe(el));list.forEach(([r])=>geoPlace(r))}
+function actCard(r,i,H){const s=runStats(r),A=achievements(H,i),best=A.slice().sort((a,b)=>a.rank-b.rank||b.km-a.km)[0];const velo=r.mode==='velo';
+return `<article class="card act" data-ract="${i}" tabindex="0" aria-label="${esc(runTitle(r))}"><div class="actH">${avatar()}<div><b>${esc(P.name||'Moi')}</b><div class="small mut">${whenTxt(r)} · Coach</div><div class="small mut actPl">${ic(spIc(r.mode==='velo'?'velo':r.mode))}<span data-place="${r.ts||r.d+r.sec}">${esc(r.place||'')}</span></div></div></div>
+<h3 class="actT">${esc(runTitle(r))}</h3>
+<div class="actS"><div><span class="small mut">Distance</span><b>${kmTxt(r.km)} km</b></div><div><span class="small mut">${velo?'Vitesse':'Allure'}</span><b>${velo?spdTxt(s.mov,r.km)+' km/h':mmss(paceOf(s.mov,r.km))+' /km'}</b></div><div><span class="small mut">Temps</span><b>${durTxt(s.mov)}</b></div>${A.length?`<div><span class="small mut">Perfs</span><b class="meds">${A.map(a=>medal(a.rank,20)).join('')}</b></div>`:''}</div>
+${best?`<div class="achB">${medal(best.rank,34)}<div><b>${achTxt(best)}</b>${achDelta(best)?`<div style="margin-top:4px">${achDelta(best)}</div>`:''}</div></div>`:''}
+<div class="feedMap" data-ri="${i}">${(r.pts||[]).length>1?routeSvg(r.pts,360,200):''}</div>
+<div class="actF small mut"><span>${ic('flame')}${r.kcal} kcal actives</span>${s.gain!=null?`<span>${ic('rando')}${s.gain} m D+</span>`:''}</div></article>`}
+/* fiche détaillée */
+function showRun(run,idx){const H=lsGet('runs')||[];if(idx==null){idx=H.findIndex(x=>(x.ts&&x.ts===run.ts)||(x.d===run.d&&x.sec===run.sec&&x.km===run.km));if(idx<0){H.push(run);idx=H.length-1}}const r=H[idx];const s=runStats(r),A=achievements(H,idx),velo=r.mode==='velo';
+const S=r.splits||[];const part=r.km-S.length;const partT=part>0.05?Math.max(0,r.sec-S.reduce((a,c)=>a+c,0)):0;const rows=S.map((t,k)=>({k:String(k+1),t,p:t}));if(partT>0)rows.push({k:part.toFixed(2).replace('.',','),t:partT,p:partT/part});
+const fast=rows.length?Math.min(...rows.map(x=>x.p)):0,slow=rows.length?Math.max(...rows.map(x=>x.p)):1;
+const el=(k)=>{if(!s.hasE)return null;const P=r.pts;const a0=P.find((p,j)=>s.cd[j]>=(k-1)*1000),a1=P.find((p,j)=>s.cd[j]>=k*1000)||P[P.length-1];return a0&&a1&&a0.a!=null&&a1.a!=null?Math.round(a1.a-a0.a):null};
+$('#runSheet').hidden=false;
+$('#runSheet').innerHTML=`<div class="sheetIn actD" style="max-height:100vh;min-height:100vh;border-radius:0;padding-top:max(12px,env(safe-area-inset-top))">
+<div class="actTop"><button class="x" data-rclose="1" aria-label="Fermer" style="font-size:28px">‹</button><b>${MODEN[r.mode]||'Sortie'}</b><button class="x" data-rshare="1" aria-label="Partager" style="font-size:15px;font-weight:800">Partager</button></div>
+<div class="actH">${avatar(48)}<div><b>${esc(P.name||'Moi')}</b><div class="small mut">${whenTxt(r)}${r.place?' · '+esc(r.place):''}</div></div></div>
+<h2 class="actT" style="font-size:26px;margin:14px 0 4px">${esc(runTitle(r))} <button class="x" data-rname="1" aria-label="Renommer" style="font-size:15px;color:var(--mut)">Renommer</button></h2>
+<div class="actG"><div><span class="small mut">Distance</span><b>${kmTxt(r.km)} km</b></div><div><span class="small mut">${velo?'Vitesse moyenne':'Allure moyenne'}</span><b>${velo?spdTxt(s.mov,r.km)+' km/h':mmss(paceOf(s.mov,r.km))+' /km'}</b></div>
+<div><span class="small mut">Temps de déplacement</span><b>${durTxt(s.mov)}</b></div><div><span class="small mut">Durée totale</span><b>${durTxt(r.sec)}</b></div>
+<div><span class="small mut">Dénivelé positif</span><b>${s.gain!=null?s.gain+' m':'—'}</b></div><div><span class="small mut">Altitude max</span><b>${s.amax!=null?s.amax+' m':'—'}</b></div>
+<div><span class="small mut">Calories actives</span><b>${r.kcal} kcal</b></div><div><span class="small mut">À remanger</span><b>${Math.round(r.kcal/2)} kcal</b></div></div>
+<div class="map tall" id="histMap"></div>
+${A.length?`<h3>Performances</h3>${A.map(a=>`<div class="achB" style="margin:8px 0">${medal(a.rank,34)}<div><b>${achTxt(a)}</b><div class="small mut">${mmss(a.v)} sur ${a.lab}${achDelta(a)?' · ':''}${achDelta(a)}</div></div></div>`).join('')}`:''}
+<div class="card t-butter tint" style="margin:14px 0"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><span style="width:22px;height:22px;display:flex;flex:none">${ic('spark')}</span><b>Analyse du coach</b></div><p class="small" style="margin:0;line-height:1.55">${coachRun(H,idx)}</p></div>
+${rows.length?`<h3>${velo?'Kilomètres':'Allure par kilomètre'}</h3><div class="splits"><div class="spH small mut"><span>Km</span><span>${velo?'km/h':'Allure'}</span><span></span><span>Dén.</span></div>${rows.map((x,k)=>{const w=slow===fast?80:30+70*(slow-x.p)/(slow-fast);const e=el(k+1);return `<div class="spR"><span>${x.k}</span><b>${velo?(3600/x.p).toFixed(1).replace('.',','):mmss(x.p)}</b><span class="spBar"><i style="width:${w.toFixed(0)}%;background:${x.p===fast?'var(--brand)':'var(--acc)'}"></i></span><span class="small mut">${e==null?'':(e>0?'+':'')+e}</span></div>`}).join('')}</div>`:''}
+${paceChart(r)}
+<div class="btns" style="margin-top:16px"><button data-rshare="1">Partager</button><button data-rdel="1" style="color:var(--warn)">Supprimer</button></div>
+<p class="small mut">La carte et le lieu viennent d'OpenStreetMap. Les calories restent dans ton journal même si tu supprimes l'activité.</p></div>`;
+mapIn($('#histMap'),r.pts||[]).then(M=>{HM=M});
+$('#runSheet').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+if(b.dataset.rclose){if(HM){HM.remove();HM=null}$('#runSheet').hidden=true;$('#runSheet').onclick=null;renderRuns();return}
+if(b.dataset.rname){const t=prompt('Nom de l\'activité',runTitle(r));if(t!=null){const H2=lsGet('runs')||[];H2[idx].title=t.trim()||undefined;save('runs',H2);if(HM){HM.remove();HM=null}showRun(null,idx)}return}
+if(b.dataset.rshare){const txt=`${runTitle(r)} : ${kmTxt(r.km)} km en ${durTxt(s.mov)}${velo?'':' ('+mmss(paceOf(s.mov,r.km))+' /km)'}${A.length?' · '+achTxt(A[0]):''}`;if(navigator.share)navigator.share({title:runTitle(r),text:txt}).catch(()=>{});else{navigator.clipboard&&navigator.clipboard.writeText(txt);toast('Texte copié')}return}
+if(b.dataset.rdel){if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Confirmer la suppression';return}const H2=lsGet('runs')||[];H2.splice(idx,1);save('runs',H2);if(HM){HM.remove();HM=null}$('#runSheet').hidden=true;$('#runSheet').onclick=null;renderRuns();toast('Activité supprimée')}}}
+function paceChart(r){const s=runStats(r);if(!s.hasE||r.pts.length<6)return'';const P=r.pts,velo=r.mode==='velo';const seg=[];let j=0;for(let i=1;i<P.length;i++){if(s.cd[i]-s.cd[j]>=200||i===P.length-1){const d=s.cd[i]-s.cd[j],t=P[i].e-P[j].e;if(d>50&&t>0)seg.push({x:(s.cd[i]+s.cd[j])/2000,v:velo?d/t*3.6:t/d*1000});j=i}}
+if(seg.length<3)return'';const vs=seg.map(x=>x.v).sort((a,b)=>a-b);const lo=vs[Math.floor(vs.length*.05)],hi=vs[Math.ceil(vs.length*.95)-1]||vs[vs.length-1];const W=340,Hh=120,X=s.cd[s.cd.length-1]/1000;
+const y=v=>{const f=(Math.min(Math.max(v,lo),hi)-lo)/((hi-lo)||1);return velo?Hh-8-f*(Hh-20):8+f*(Hh-20)};const pts=seg.map(p=>[(p.x/X)*(W-10)+5,y(p.v)]);
+const A=r.pts.map(p=>p.a).filter(a=>a!=null);let alt='';if(A.length>4){const mn=Math.min(...A),mx=Math.max(...A);alt=`<path d="M5,${Hh} ${r.pts.map((p,k)=>p.a==null?'':`L${((s.cd[k]/1000)/X*(W-10)+5).toFixed(1)},${(Hh-((p.a-mn)/((mx-mn)||1))*(Hh*.45)).toFixed(1)}`).join(' ')} L${W-5},${Hh} Z" fill="var(--line)" opacity=".9"/>`}
+return `<h3>${velo?'Vitesse':'Allure'} au fil du parcours</h3><svg viewBox="0 0 ${W} ${Hh}" style="width:100%;height:auto;display:block" role="img" aria-label="Courbe d'${velo?'vitesse':'allure'}${alt?' et profil d\'altitude':''}">${alt}<path d="M${pts.map(p=>p.map(v=>v.toFixed(1)).join(',')).join('L')}" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+<div class="small mut" style="display:flex;justify-content:space-between"><span>0 km</span><span>${kmTxt(X)} km</span></div><p class="small mut" style="margin:2px 0 0">Plus haut = plus rapide${alt?' · en gris : l\'altitude':''}.</p>`}
+function coachRun(H,idx){const r=H[idx],s=runStats(r),velo=r.mode==='velo',L=[];const pace=paceOf(s.mov,r.km);
+const prev=H.slice(0,idx).filter(x=>x.mode===r.mode&&x.km>=1);
+if(prev.length&&r.km>=1){let j=prev.length-1;const pv=x=>paceOf(runStats(x).mov,x.km);while(j>=0&&pv(prev[j])>=pace)j--;
+if(j<0&&prev.length>=2)L.push(velo?'Ta vitesse moyenne la plus élevée depuis que tu utilises Coach.':'Ta meilleure allure moyenne depuis que tu utilises Coach. Superbe.');
+else if(j>=0){const days=Math.round((new Date(r.d)-new Date(prev[j].d))/864e5);if(days>=14)L.push(`${velo?'Ta vitesse la plus élevée':'Ton allure la plus rapide'} depuis plus de ${Math.floor(days/7)} semaines.`)}
+const avg=prev.slice(-5).reduce((a,x)=>a+pv(x),0)/Math.min(5,prev.length);const dif=(avg-pace)/avg;if(Math.abs(dif)>0.03)L.push(`${dif>0?'Plus rapide':'Plus lent'} que ta moyenne des dernières sorties (${velo?spdTxt(avg*r.km,r.km)+' km/h':mmss(avg)+' /km'}).`)}
+const S=r.splits||[];if(S.length>=4&&!velo){const h=Math.floor(S.length/2),a=S.slice(0,h).reduce((x,y)=>x+y,0)/h,b=S.slice(h).reduce((x,y)=>x+y,0)/(S.length-h);
+if(b<a*0.98)L.push('Tu as fini plus vite que tu as commencé : très bonne gestion de ton effort.');else if(b>a*1.06)L.push('Tu as ralenti sur la fin. Pars un peu plus doucement la prochaine fois pour finir fort.');
+const f=S.indexOf(Math.min(...S));L.push(`Ton kilomètre le plus rapide : le ${f+1}${f?'e':'er'}, en ${mmss(S[f])}.`)}
+if(s.gain>40)L.push(`${s.gain} m de dénivelé : ça compte, ton allure sur le plat serait plus rapide.`);
+const wk=H.filter(x=>(new Date(r.d)-new Date(x.d))/864e5<7&&(new Date(r.d)-new Date(x.d))>=0&&x.mode!=='marche').length;if(wk>=3)L.push(`${wk}e sortie en 7 jours : avec la boxe, garde au moins un vrai jour de repos.`);
+L.push(`${r.kcal} kcal actives : tu peux en remanger ${Math.round(r.kcal/2)}, idéalement avec 25 à 30 g de protéines dans les 2 heures.`);return L.map(esc).join(' ')}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-gps],[data-rshow],[data-ract],[data-feedmore]');if(!b)return;if(b.dataset.gps)startRun(b.dataset.gps);else if(b.dataset.feedmore){FEEDN+=6;renderRuns()}else{const H=lsGet('runs')||[];const k=+(b.dataset.ract??b.dataset.rshow);showRun(H[k],k)}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.ract!=null)e.target.click()});
 
 
 /* ---------- semaine sportive : écran ---------- */
@@ -1398,8 +1500,8 @@ document.getElementById('woM').addEventListener('input',woCalc);
 let LLP=null,HM=null;
 function loadLeaflet(){if(window.L)return Promise.resolve(window.L);if(LLP)return LLP;LLP=new Promise((res,rej)=>{const l=document.createElement('link');l.rel='stylesheet';l.href='vendor/leaflet/leaflet.css';document.head.appendChild(l);const s=document.createElement('script');s.src='vendor/leaflet/leaflet.js';s.onload=()=>res(window.L);s.onerror=()=>{LLP=null;rej(new Error('leaflet'))};document.head.appendChild(s)});return LLP}
 const TILE='https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-async function mapIn(el,pts,live){let L;try{L=await loadLeaflet()}catch(e){el.innerHTML=routeSvg(pts,320,200);return null}if(!el.isConnected)return null;el.innerHTML='';
-const m=L.map(el,{zoomControl:false,attributionControl:true,preferCanvas:true});L.tileLayer(TILE,{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(m);m.attributionControl.setPrefix(false);
+async function mapIn(el,pts,live,stat){let L;try{L=await loadLeaflet()}catch(e){el.innerHTML=routeSvg(pts,320,200);return null}if(!el.isConnected)return null;el.innerHTML='';
+const m=L.map(el,{zoomControl:false,attributionControl:true,preferCanvas:true,...(stat?{dragging:false,touchZoom:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,tap:false,zoomSnap:0.25}:{})});L.tileLayer(TILE,{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(m);m.attributionControl.setPrefix(false);
 const ll=pts.map(p=>[p.la,p.lo]);const shadow=L.polyline(ll,{color:'#ffffff',weight:10,opacity:.85}).addTo(m);const line=L.polyline(ll,{color:'#e8875e',weight:5.5,lineCap:'round',lineJoin:'round'}).addTo(m);
 const dot=(p,c,r)=>L.circleMarker(p,{radius:r,color:'#fff',weight:3,fillColor:c,fillOpacity:1}).addTo(m);
 const M={m,started:ll.length>0,drag:false,end:null};if(ll.length){dot(ll[0],'#4e8a5e',7);M.end=dot(ll[ll.length-1],'#b5603a',8)}
